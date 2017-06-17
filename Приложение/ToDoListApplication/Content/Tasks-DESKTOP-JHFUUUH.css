@@ -1,0 +1,24 @@
+.navbar-inverse {
+    background-color: #21262A;
+}
+
+body {
+    background-color: #FAFBFC;
+}
+
+.task-box {
+    background-color: #3F4448;
+}
+
+.task-title-input {
+    max-width: 100%;
+    border: none;
+    background: none;
+    color: #C0C1C3;
+    font-family: 'Roboto', sans-serif;
+}
+
+.task-text-input {
+    color: #F5F5F5;
+    font-family: 'Roboto', sans-serif;
+}

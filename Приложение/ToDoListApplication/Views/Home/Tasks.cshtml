@@ -1,0 +1,30 @@
+﻿
+@model IEnumerable<ToDoListApplication.Models.TaskRecord>
+@{ ViewBag.Title = "Задания"; }
+
+
+@foreach (var item in Model)
+{
+    <form class="col-lg-8 col-lg-push-2 task-box" style="padding: 0;">
+        <input type="text" class="form-control task-title-input" value="@item.Title" placeholder="Title" />
+        <input type="text" class="form-control task-text-input" value="@item.Text" placeholder="Title" />
+        <div class="col-lg-12 task-tools-menu">
+            <div class="dropdown">
+                <button class="btn btn-xs dropdown-toggle menu-button" data-toggle="dropdown" ><img src="~/Content/Icons/Label_plus.png" /></button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+
+                    <li role="presentation" class="text-center dropdown-header">Добавить ярлык</li>
+                    <li><textarea class="input-sm label-textArea"></textarea></li>
+                    
+                    <li class="divider"></li>
+                    <li><a role="menuitem" href="#">Добавить ярлык "дом"</a></li>
+                </ul>
+            </div>
+
+            
+
+        </div>
+    </form>
+    <br class="col-lg-12" />
+}
+@Scripts.Render("~/Scripts/tasks.js")
