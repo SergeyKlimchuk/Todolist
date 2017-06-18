@@ -17,14 +17,14 @@ namespace ToDoListApplication.Controllers
         private void AddToBase()
         {
             dataContext = new TaskViewModels();
-            Label label1 = new Label("label1 text", System.Drawing.Color.Azure);
-            Label label2 = new Label("label2 text", System.Drawing.Color.Purple);
+            Label label1 = new Label("Дом", System.Drawing.Color.Azure);
+            Label label2 = new Label("Работа", System.Drawing.Color.Purple);
             List<Label> labels = new List<Label> { label1, label2 };
             dataContext.Labels.AddRange(labels);
 
-            TaskRecord task1 = new TaskRecord("title1", "text1");
+            TaskRecord task1 = new TaskRecord("Хлебушек", "Купить злебушка, вспомнить что сам хлебушек");
             task1.AlarmTime = DateTime.Now;
-            TaskRecord task2 = new TaskRecord("title2", "text2");
+            TaskRecord task2 = new TaskRecord("Отчет", "Сдать отчет г. директору предприятия 'ЦЕСНА'");
             task2.AlarmTime = DateTime.Now;
             dataContext.TaskRecords.AddRange(new List<TaskRecord> { task1, task2 });
             dataContext.SaveChanges();
@@ -40,6 +40,7 @@ namespace ToDoListApplication.Controllers
         [HttpGet]
         public ActionResult Tasks(int? page = null)
         {
+            
             // Подключение  контекста
             dataContext = new TaskViewModels();
 
@@ -75,12 +76,14 @@ namespace ToDoListApplication.Controllers
                 int countTasks = recordsCount - pageStart;
 
                 tasks = dataContext.TaskRecords.ToList().GetRange(pageStart, countTasks);
+
             }
             else
             {
                 tasks = dataContext.TaskRecords.ToList().GetRange(pageStart, PAGE_COUNT);
             }
             
+
             return View(tasks);
         }
     }

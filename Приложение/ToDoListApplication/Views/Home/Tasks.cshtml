@@ -2,6 +2,9 @@
 @model IEnumerable<ToDoListApplication.Models.TaskRecord>
 @{ ViewBag.Title = "Задания"; }
 
+@using Microsoft.AspNet.Identity;
+@User.Identity.GetUserId()
+
 
 @foreach (var item in Model)
 {
@@ -9,22 +12,30 @@
         <input type="text" class="form-control task-title-input" value="@item.Title" placeholder="Title" />
         <input type="text" class="form-control task-text-input" value="@item.Text" placeholder="Title" />
         <div class="col-lg-12 task-tools-menu">
-            <div class="dropdown">
-                <button class="btn btn-xs dropdown-toggle menu-button" data-toggle="dropdown" ><img src="~/Content/Icons/Label_plus.png" /></button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
 
-                    <li role="presentation" class="text-center dropdown-header">Добавить ярлык</li>
-                    <li><textarea class="input-sm label-textArea"></textarea></li>
-                    
-                    <li class="divider"></li>
-                    <li><a role="menuitem" href="#">Добавить ярлык "дом"</a></li>
+            <div class="button-group">
+                <button type="button" class="btn btn-xs dropdown-toggle menu-button" data-toggle="dropdown"><img src="~/Content/Icons/Label_plus.png" /></button>
+                <ul class="dropdown-menu">
+                    <li role="presentation" class="text-center dropdown-header">&nbsp;Добавить ярлык</li>
+
+                    @if (item.Labels != null)
+                    {
+                        <li>@item.Labels.ToList().Count</li>
+                    }
+
+
+                    @foreach (var labe in item.Labels.ToList())
+                    {
+                        <li><a href="" class="small" data-value="@labe.Id" tabIndex="-1"><input type="checkbox" />&nbsp;@labe.Name</a></li>
+                    }
                 </ul>
             </div>
 
-            
-
         </div>
     </form>
-    <br class="col-lg-12" />
 }
-@Scripts.Render("~/Scripts/tasks.js")
+
+@section scripts {
+    @Scripts.Render("~/Scripts/tasks.js")
+}
+

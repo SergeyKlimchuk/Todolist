@@ -1,7 +1,7 @@
-﻿using System.Drawing;
-
-namespace ToDoListApplication.Models
+﻿namespace ToDoListApplication.Models
 {
+    using System.Drawing;
+
     public class Label
     {
         public int Id { get; set; }
