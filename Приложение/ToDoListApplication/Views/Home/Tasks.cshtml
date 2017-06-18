@@ -1,5 +1,5 @@
-﻿
-@model IEnumerable<ToDoListApplication.Models.TaskRecord>
+﻿@using ToDoListApplication.Models
+@model IEnumerable<TaskModel>
 @{ ViewBag.Title = "Задания"; }
 
 @using Microsoft.AspNet.Identity;
@@ -18,13 +18,13 @@
                 <ul class="dropdown-menu">
                     <li role="presentation" class="text-center dropdown-header">&nbsp;Добавить ярлык</li>
 
-                    @if (item.Labels != null)
+                    @if (item.LabelModel != null)
                     {
-                        <li>@item.Labels.ToList().Count</li>
+                        <li>@item.LabelModel.ToList().Count</li>
                     }
 
 
-                    @foreach (var labe in item.Labels.ToList())
+                    @foreach (var labe in item.LabelModel.ToList())
                     {
                         <li><a href="" class="small" data-value="@labe.Id" tabIndex="-1"><input type="checkbox" />&nbsp;@labe.Name</a></li>
                     }

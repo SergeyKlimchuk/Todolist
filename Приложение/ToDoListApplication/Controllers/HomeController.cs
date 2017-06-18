@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -9,24 +10,23 @@ namespace ToDoListApplication.Controllers
 {
     public class HomeController : Controller
     {
-        // Контекст данных
-        TaskViewModels dataContext;
         // Кол-во записей на странице
         const int PAGE_COUNT = 10;
         
         private void AddToBase()
         {
-            dataContext = new TaskViewModels();
-            Label label1 = new Label("Дом", System.Drawing.Color.Azure);
-            Label label2 = new Label("Работа", System.Drawing.Color.Purple);
-            List<Label> labels = new List<Label> { label1, label2 };
-            dataContext.Labels.AddRange(labels);
+            DataContext dataContext = new DataContext();
+            LabelModel label1 = new LabelModel { Name = "Дом", Color = System.Drawing.Color.Azure };
+            LabelModel label2 = new LabelModel { Name = "Работа", Color = System.Drawing.Color.Purple };
+            List<LabelModel> labels = new List<LabelModel> { label1, label2 };
+            dataContext.LabelModels.AddRange(labels);
+            dataContext.SaveChanges();
 
-            TaskRecord task1 = new TaskRecord("Хлебушек", "Купить злебушка, вспомнить что сам хлебушек");
+            TaskModel task1 = new TaskModel { Title = "Хлебушек", Text = "Купить злебушка, вспомнить что сам хлебушек", LabelModel = new List<LabelModel> { label1, label2 } };
             task1.AlarmTime = DateTime.Now;
-            TaskRecord task2 = new TaskRecord("Отчет", "Сдать отчет г. директору предприятия 'ЦЕСНА'");
+            TaskModel task2 = new TaskModel { Title= "Отчет", Text="Сдать отчет г. директору предприятия 'ЦЕСНА'", LabelModel = new List<LabelModel> { label1 } };
             task2.AlarmTime = DateTime.Now;
-            dataContext.TaskRecords.AddRange(new List<TaskRecord> { task1, task2 });
+            dataContext.TaskModels.AddRange(new List<TaskModel> { task1, task2 });
             dataContext.SaveChanges();
         }
 
@@ -40,10 +40,15 @@ namespace ToDoListApplication.Controllers
         [HttpGet]
         public ActionResult Tasks(int? page = null)
         {
-            
-            // Подключение  контекста
-            dataContext = new TaskViewModels();
+            // Контекст данных
+            DataContext dataContext = new DataContext();
+            //AddToBase();
+            var taskList = dataContext.TaskModels.Include(p => p.LabelModel);
+            var d = taskList.ToList()[0].LabelModel.Count();
 
+            Response.Write(d);
+            return null;
+            // Подключение  контекста
             /* Тест кейс
              * (1) [0..9]
              * (2) [10..19]
@@ -62,25 +67,25 @@ namespace ToDoListApplication.Controllers
             // Вычисление промежуточных переменных
             int pageStart = Convert.ToInt32(page) * PAGE_COUNT;
             int pageStop = pageStart + PAGE_COUNT - 1;
-            int recordsCount = dataContext.TaskRecords.Count();
+            int recordsCount = taskList.Count();
 
             // Проверка на выход
             if (pageStart > recordsCount) return new HttpNotFoundResult("Page not found (Out of range >)!");
 
             // Задания на вывод
-            List<TaskRecord> tasks;
+            List<TaskModel> tasks;
 
             // Если запрашиваемая страница будет отображена не полностью
             if (pageStop > recordsCount)
             {
                 int countTasks = recordsCount - pageStart;
 
-                tasks = dataContext.TaskRecords.ToList().GetRange(pageStart, countTasks);
+                tasks = taskList.ToList().GetRange(pageStart, countTasks);
 
             }
             else
             {
-                tasks = dataContext.TaskRecords.ToList().GetRange(pageStart, PAGE_COUNT);
+                tasks = taskList.ToList().GetRange(pageStart, PAGE_COUNT);
             }
             
 

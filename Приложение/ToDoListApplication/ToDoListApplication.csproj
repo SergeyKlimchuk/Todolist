@@ -197,11 +197,11 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\DataContext.cs" />
     <Compile Include="Models\IdentityModels.cs" />
-    <Compile Include="Models\Label.cs" />
+    <Compile Include="Models\LabelModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
-    <Compile Include="Models\TaskRecord.cs" />
-    <Compile Include="Models\TaskViewModels.cs" />
+    <Compile Include="Models\TaskModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -321,7 +321,9 @@
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\tasks.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
