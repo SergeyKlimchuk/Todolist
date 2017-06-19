@@ -9,9 +9,8 @@ namespace ToDoListApplication.Models
         public string Title { get; set; }
         public string Text { get; set; }
         public DateTime AlarmTime { get; set; }
-        //public int AuthorId { get; set; }
-
-        //public int? LabelId { get; set; }
+        public string AuthorId { get; set; }
+        
         public ICollection<LabelModel> LabelModel { get; set; }
 
         public TaskModel()

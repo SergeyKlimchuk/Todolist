@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.AspNet.Identity;
 using System.Data.Entity;
 using System.Linq;
 using System.Web;
@@ -13,18 +14,80 @@ namespace ToDoListApplication.Controllers
         // Кол-во записей на странице
         const int PAGE_COUNT = 10;
         
+
+        // Нужно добавлять ярлыки при помощи AJAX запросов.
+        private void AddLabel(LabelModel label)
+        {
+            // Подключаемся к базе
+            DataContext dataContext = new DataContext();
+
+            dataContext.LabelModels.Add(label);
+            dataContext.SaveChanges();
+        }
+
+        private void AddTask()
+        {
+
+        }
+
+        public ActionResult EditLabel(int taskId, int labelId, string actionId)
+        {
+            // ищем запись по ид
+            // ищем ярлык по ид
+            // проверяем на присетствие этого ярлыка в списке ярлыков записи
+
+
+            /* Если действие будет направленно на добавление
+             * TRUE:
+             *      (если ярлыка нет в списке - то добавим), (если есть - ничего не делаем, возможно ошибочный запрос)
+             * FALSE:
+             *      (если ярлыка нет - ничего не делаем), (если есть -удаляем его из списка)
+             */
+
+            // сохраняем
+            
+            DataContext dataContext = new DataContext();
+            // Ищем запись
+            TaskModel task = dataContext.TaskModels.Include(t => t.LabelModel).Where(t => t.Id == taskId).ToList()[0];
+            // Ищем ярлык
+            LabelModel label = dataContext.LabelModels.Where(l => l.Id == labelId).ToList()[0];
+            // Содержится ли ярлык в записи
+            bool contain = task.LabelModel.Contains(label);
+            
+            if (Convert.ToBoolean(actionId))
+            {
+                if (!contain)
+                {
+                    task.LabelModel.Add(label);
+                }
+            }
+            else
+            {
+                if (contain)
+                {
+                    task.LabelModel.Remove(label);
+                }
+            }
+            dataContext.SaveChanges();
+
+            //throw new Exception();
+
+            // Возвращаем пустой ответ
+            return new EmptyResult();
+        }
+
         private void AddToBase()
         {
             DataContext dataContext = new DataContext();
-            LabelModel label1 = new LabelModel { Name = "Дом", Color = System.Drawing.Color.Azure };
-            LabelModel label2 = new LabelModel { Name = "Работа", Color = System.Drawing.Color.Purple };
+            LabelModel label1 = new LabelModel { Name = "Дом", Color = System.Drawing.Color.Azure, AuthorId=User.Identity.GetUserId() };
+            LabelModel label2 = new LabelModel { Name = "Работа", Color = System.Drawing.Color.Purple, AuthorId = User.Identity.GetUserId() };
             List<LabelModel> labels = new List<LabelModel> { label1, label2 };
             dataContext.LabelModels.AddRange(labels);
             dataContext.SaveChanges();
 
-            TaskModel task1 = new TaskModel { Title = "Хлебушек", Text = "Купить злебушка, вспомнить что сам хлебушек", LabelModel = new List<LabelModel> { label1, label2 } };
+            TaskModel task1 = new TaskModel { Title = "Хлебушек", Text = "Купить хлебушка, вспомнить что сам хлебушек", LabelModel = new List<LabelModel> { label1, label2 }, AuthorId = User.Identity.GetUserId() };
             task1.AlarmTime = DateTime.Now;
-            TaskModel task2 = new TaskModel { Title= "Отчет", Text="Сдать отчет г. директору предприятия 'ЦЕСНА'", LabelModel = new List<LabelModel> { label1 } };
+            TaskModel task2 = new TaskModel { Title= "Отчет", Text="Сдать отчет г. директору предприятия 'ЦЕСНА'", LabelModel = new List<LabelModel> { label1 }, AuthorId = User.Identity.GetUserId() };
             task2.AlarmTime = DateTime.Now;
             dataContext.TaskModels.AddRange(new List<TaskModel> { task1, task2 });
             dataContext.SaveChanges();
@@ -41,13 +104,18 @@ namespace ToDoListApplication.Controllers
         public ActionResult Tasks(int? page = null)
         {
             // Контекст данных
-            DataContext dataContext = new DataContext();
-            //AddToBase();
+            DataContext dataContext = new DataContext(); //AddToBase();
+            
             var taskList = dataContext.TaskModels.Include(p => p.LabelModel);
-            var d = taskList.ToList()[0].LabelModel.Count();
 
-            Response.Write(d);
-            return null;
+            var userId = User.Identity.GetUserId();
+
+            if (string.IsNullOrEmpty(userId)) throw new Exception("Unauth");
+
+            List<LabelModel> labelsList = dataContext.LabelModels.Where(l => l.AuthorId == userId).ToList();
+
+            
+
             // Подключение  контекста
             /* Тест кейс
              * (1) [0..9]
@@ -87,7 +155,8 @@ namespace ToDoListApplication.Controllers
             {
                 tasks = taskList.ToList().GetRange(pageStart, PAGE_COUNT);
             }
-            
+
+            ViewBag.LabelsList = labelsList;
 
             return View(tasks);
         }

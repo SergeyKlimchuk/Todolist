@@ -1,32 +1,27 @@
 ﻿@using ToDoListApplication.Models
 @model IEnumerable<TaskModel>
-@{ ViewBag.Title = "Задания"; }
+@{ 
+    ViewBag.Title = "Задания";
+ }
 
-@using Microsoft.AspNet.Identity;
-@User.Identity.GetUserId()
+@*Ajax.ActionLink("text", "EditLabel", new { id = 1 }, new AjaxOptions { UpdateTargetId = "RareBlock", LoadingElementId = "RareBlock" })*@
 
-
-@foreach (var item in Model)
+@foreach (var task in Model)
 {
     <form class="col-lg-8 col-lg-push-2 task-box" style="padding: 0;">
-        <input type="text" class="form-control task-title-input" value="@item.Title" placeholder="Title" />
-        <input type="text" class="form-control task-text-input" value="@item.Text" placeholder="Title" />
+        <input type="text" class="form-control task-title-input" value="@task.Title" placeholder="Title" />
+        <input type="text" class="form-control task-text-input" value="@task.Text" placeholder="Title" />
         <div class="col-lg-12 task-tools-menu">
 
             <div class="button-group">
                 <button type="button" class="btn btn-xs dropdown-toggle menu-button" data-toggle="dropdown"><img src="~/Content/Icons/Label_plus.png" /></button>
                 <ul class="dropdown-menu">
-                    <li role="presentation" class="text-center dropdown-header">&nbsp;Добавить ярлык</li>
-
-                    @if (item.LabelModel != null)
+                    <li role="presentation" class="text-center dropdown-header">Добавить ярлык</li>
+                    @foreach (LabelModel label in ViewBag.LabelsList)
                     {
-                        <li>@item.LabelModel.ToList().Count</li>
-                    }
+                        string radioChecked = task.LabelModel.Contains(label) ? "checked" : "";
 
-
-                    @foreach (var labe in item.LabelModel.ToList())
-                    {
-                        <li><a href="" class="small" data-value="@labe.Id" tabIndex="-1"><input type="checkbox" />&nbsp;@labe.Name</a></li>
+                        <li><a href="" class="small" data-value="@label.Id" tabIndex="-1"><input type="checkbox" name="@task.Id" @radioChecked />@label.Name</a></li>
                     }
                 </ul>
             </div>
@@ -34,8 +29,12 @@
         </div>
     </form>
 }
+<div style="width: 200px; height: 200px; background-color: red; display: none;" id="RareBlock">
+
+</div>
 
 @section scripts {
     @Scripts.Render("~/Scripts/tasks.js")
+    @Scripts.Render("~/Scripts/jquery.unobtrusive-ajax.min.js")
 }
 
