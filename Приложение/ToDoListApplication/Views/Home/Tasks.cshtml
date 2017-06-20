@@ -4,13 +4,11 @@
     ViewBag.Title = "Задания";
  }
 
-@*Ajax.ActionLink("text", "EditLabel", new { id = 1 }, new AjaxOptions { UpdateTargetId = "RareBlock", LoadingElementId = "RareBlock" })*@
-
 @foreach (var task in Model)
 {
     <form class="col-lg-8 col-lg-push-2 task-box" style="padding: 0;">
-        <input type="text" class="form-control task-title-input" value="@task.Title" placeholder="Title" />
-        <input type="text" class="form-control task-text-input" value="@task.Text" placeholder="Title" />
+        <input type="text" class="form-control task-title-input" name="@task.Id" value="@task.Title" placeholder="Title" />
+        <input type="text" class="form-control task-text-input" name="@task.Id" value="@task.Text" placeholder="Title" />
         <div class="col-lg-12 task-tools-menu">
 
             <div class="button-group">

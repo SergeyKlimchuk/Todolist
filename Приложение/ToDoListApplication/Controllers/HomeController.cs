@@ -25,9 +25,13 @@ namespace ToDoListApplication.Controllers
             dataContext.SaveChanges();
         }
 
-        private void AddTask()
+        private void AddTask(TaskModel task)
         {
+            // Подключаемся к базе
+            DataContext dataContext = new DataContext();
 
+            dataContext.TaskModels.Add(task);
+            dataContext.SaveChanges();
         }
 
         public ActionResult EditLabel(int taskId, int labelId, string actionId)
@@ -76,18 +80,45 @@ namespace ToDoListApplication.Controllers
             return new EmptyResult();
         }
 
-        private void AddToBase()
+        public ActionResult EditTaskText(int taskId, string text)
         {
             DataContext dataContext = new DataContext();
-            LabelModel label1 = new LabelModel { Name = "Дом", Color = System.Drawing.Color.Azure, AuthorId=User.Identity.GetUserId() };
-            LabelModel label2 = new LabelModel { Name = "Работа", Color = System.Drawing.Color.Purple, AuthorId = User.Identity.GetUserId() };
+            var currentTask =  dataContext.TaskModels.Where(t => t.Id == taskId);
+
+            if (currentTask == null) return null;
+
+            currentTask.ToList()[0].Text = text;
+            dataContext.SaveChanges();
+            
+            return new EmptyResult();
+        }
+
+        public ActionResult EditTitleText(int taskId, string title)
+        {
+            DataContext dataContext = new DataContext();
+            var currentTask = dataContext.TaskModels.Where(t => t.Id == taskId);
+
+            if (currentTask == null) return null;
+
+            currentTask.ToList()[0].Title = title;
+            dataContext.SaveChanges();
+
+            return new EmptyResult();
+        }
+
+        private void AddToBase()
+        {
+            string userId = User.Identity.GetUserId();
+            DataContext dataContext = new DataContext();
+            LabelModel label1 = new LabelModel { Name = "Дом", Color = System.Drawing.Color.Azure, AuthorId= userId };
+            LabelModel label2 = new LabelModel { Name = "Работа", Color = System.Drawing.Color.Purple, AuthorId = userId };
             List<LabelModel> labels = new List<LabelModel> { label1, label2 };
             dataContext.LabelModels.AddRange(labels);
             dataContext.SaveChanges();
 
-            TaskModel task1 = new TaskModel { Title = "Хлебушек", Text = "Купить хлебушка, вспомнить что сам хлебушек", LabelModel = new List<LabelModel> { label1, label2 }, AuthorId = User.Identity.GetUserId() };
+            TaskModel task1 = new TaskModel { Title = "Хлебушек", Text = "Купить хлебушка, вспомнить что сам хлебушек", LabelModel = new List<LabelModel> { label1, label2 }, AuthorId = userId };
             task1.AlarmTime = DateTime.Now;
-            TaskModel task2 = new TaskModel { Title= "Отчет", Text="Сдать отчет г. директору предприятия 'ЦЕСНА'", LabelModel = new List<LabelModel> { label1 }, AuthorId = User.Identity.GetUserId() };
+            TaskModel task2 = new TaskModel { Title= "Отчет", Text="Сдать отчет г. директору предприятия 'ЦЕСНА'", LabelModel = new List<LabelModel> { label1 }, AuthorId = userId };
             task2.AlarmTime = DateTime.Now;
             dataContext.TaskModels.AddRange(new List<TaskModel> { task1, task2 });
             dataContext.SaveChanges();
@@ -110,12 +141,10 @@ namespace ToDoListApplication.Controllers
 
             var userId = User.Identity.GetUserId();
 
-            if (string.IsNullOrEmpty(userId)) throw new Exception("Unauth");
+            if (string.IsNullOrEmpty(userId)) Response.Redirect("/");
 
             List<LabelModel> labelsList = dataContext.LabelModels.Where(l => l.AuthorId == userId).ToList();
-
             
-
             // Подключение  контекста
             /* Тест кейс
              * (1) [0..9]
