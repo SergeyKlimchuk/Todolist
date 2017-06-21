@@ -1,5 +1,5 @@
 var options = [];
-
+/*
 $('.dropdown-menu a').on('click', function (event) {
 
     var $target = $(event.currentTarget), // текущий объект
@@ -86,3 +86,13 @@ $('.task-title-input, .task-text-input').on('blur', function (event) {
     //console.log($curParrent.length);
 });
 */
+
+$('.tool-tag-change a').on('click', function (event) {
+    $radio = $(event.currentTarget).find('input');
+
+    if ($radio.length == 0) return false;
+
+    //$radio[0].checked = !$radio[0].checked;
+
+    return false;
+});

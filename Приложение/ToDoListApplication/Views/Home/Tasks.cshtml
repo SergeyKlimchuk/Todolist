@@ -3,37 +3,108 @@
 @{ 
     ViewBag.Title = "Задания";
  }
+@section styles {
+    @Styles.Render("~/Content/Tasks.css")
+    @Styles.Render("~/Content/dropdowns-enhancement.css")
+}
 
-@foreach (var task in Model)
-{
-    <form class="col-lg-8 col-lg-push-2 task-box" style="padding: 0;">
-        <input type="text" class="form-control task-title-input" name="@task.Id" value="@task.Title" placeholder="Title" />
-        <input type="text" class="form-control task-text-input" name="@task.Id" value="@task.Text" placeholder="Title" />
-        <div class="col-lg-12 task-tools-menu">
 
-            <div class="button-group">
-                <button type="button" class="btn btn-xs dropdown-toggle menu-button" data-toggle="dropdown"><img src="~/Content/Icons/Label_plus.png" /></button>
-                <ul class="dropdown-menu">
-                    <li role="presentation" class="text-center dropdown-header">Добавить ярлык</li>
-                    @foreach (LabelModel label in ViewBag.LabelsList)
-                    {
-                        string radioChecked = task.LabelModel.Contains(label) ? "checked" : "";
+    @foreach (var task in Model)
+    {
+        <div class="row">
 
-                        <li><a class="small" data-value="@label.Id" tabIndex="-1"><input type="checkbox" name="@task.Id" @radioChecked />@label.Name</a></li>
-                    }
-                </ul>
+            <div class="col-lg-8 col-lg-push-2 task-box">
+                <div class="row">
+                    <div class="col-xs-11 task-title">
+                        Some text of article title
+                    </div>
+                    <div class="col-xs-1 task-delete">
+                        X
+                    </div>
+                </div>
+                <div class="row">
+                    <textarea class="col-xs-12 task-text"></textarea>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 task-tags-menu">
+                        <span class="glyphicon glyphicon-tag pull-right"></span>
+                        <span class="glyphicon glyphicon-tag pull-right"></span>
+                        <span class="glyphicon glyphicon-tag pull-right"></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 task-users-menu">
+                        <span class="glyphicon glyphicon-user pull-right"></span>
+                        <span class="glyphicon glyphicon-user pull-right"></span>
+                        <span class="glyphicon glyphicon-user pull-right"></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 task-tools-menu">
+                        <span class="glyphicon glyphicon-wrench"></span>
+                        <span class="glyphicon glyphicon-wrench"></span>
+                        <span class="glyphicon glyphicon-wrench"></span>
+                        <div class="btn-group">
+                            <button data-toggle="dropdown" class="btn dropdown-toggle" data-placeholder="Please select"> <span class="caret"></span></button>
+                            <ul class="dropdown-menu">
+                                <li><input type="checkbox" id="ID1"><label for="ID1" name="NAME" value="VALUE">Label</label></li>
+                                <li><input type="checkbox" id="ID2"><label for="ID2" name="NAME" value="VALUE">Label</label></li>
+                            </ul>
+                        </div>
+                        <!--<div class="row">
+                            <div class="col-xs-2" style="background-color: darkgreen">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" />
+                                        Some time
+                                    </label>
+                                </div>
+                            </div>
+                        </div>-->
+
+                    </div>
+                </div>
             </div>
 
         </div>
-    </form>
-}
-<div style="width: 200px; height: 200px; background-color: red; display: none;" id="RareBlock">
-
-</div>
+    }
 
 @section scripts {
     @Scripts.Render("~/Scripts/tasks.js")
-    @Scripts.Render("~/Scripts/jquery.unobtrusive-ajax.min.js")
-    @Scripts.Render("~/Scripts/bootstrap-select.js")
+    @Scripts.Render("~/Scripts/dropdowns-enhancement.js")
 }
 
+@*
+    @foreach (var task in Model)
+    {
+        <form class="col-lg-8 col-lg-push-2 task-box" style="padding: 0;">
+            <input type="text" class="form-control task-title-input" name="@task.Id" value="@task.Title" placeholder="Title" />
+            <input type="text" class="form-control task-text-input" name="@task.Id" value="@task.Text" placeholder="Title" />
+            <div class="col-lg-12 task-tools-menu">
+
+                <div class="button-group">
+                    <button type="button" class="btn btn-xs dropdown-toggle menu-button" data-toggle="dropdown"><img src="~/Content/Icons/Label_plus.png" /></button>
+                    <ul class="dropdown-menu">
+                        <li role="presentation" class="text-center dropdown-header">Добавить ярлык</li>
+                        @foreach (LabelModel label in ViewBag.LabelsList)
+                        {
+                            string radioChecked = task.LabelModel.Contains(label) ? "checked" : "";
+
+                            <li><a class="small" data-value="@label.Id" tabIndex="-1"><input type="checkbox" name="@task.Id" @radioChecked />@label.Name</a></li>
+                        }
+                    </ul>
+                </div>
+
+            </div>
+        </form>
+    }
+    <div style="width: 200px; height: 200px; background-color: red; display: none;" id="RareBlock">
+
+    </div>
+
+    @section scripts {
+        @Scripts.Render("~/Scripts/tasks.js")
+        @Scripts.Render("~/Scripts/jquery.unobtrusive-ajax.min.js")
+        @Scripts.Render("~/Scripts/bootstrap-select.js")
+    }
+*@

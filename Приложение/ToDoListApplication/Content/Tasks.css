@@ -13,6 +13,32 @@ body {
     margin-top: 20px;
 }
 
+.task-title {
+    background-color: yellow;
+}
+
+.task-delete {
+    background-color: red;
+}
+
+.task-text {
+    background-color: brown;
+}
+
+.task-tags-menu {
+    background-color: aqua;
+}
+
+.task-users-menu {
+    background-color: burlywood;
+}
+
+.task-tools-menu {
+    background-color: cornflowerblue;
+}
+
+/*
+
 .task-title-input, .task-text-input {
     max-width: 100%;
     border: none;
@@ -49,21 +75,4 @@ body {
 .menu-button:hover {
     background-color: rgba(0, 0, 0, .1);
 }
-
-#tag-toogle-btn {
-    cursor: pointer;
-    font-size: 30px;
-    color: white;
-}
-
-.search-box {
-    margin-top: 10px;
-}
-
-
-#custom-search-form {
-    margin: 0;
-    margin-top: 5px;
-    padding: 0;
-}
-
+*/
