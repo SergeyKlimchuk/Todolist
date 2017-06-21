@@ -50,6 +50,20 @@ body {
     background-color: rgba(0, 0, 0, .1);
 }
 
-#search-box {
-    padding-top: 8px;
+#tag-toogle-btn {
+    cursor: pointer;
+    font-size: 30px;
+    color: white;
 }
+
+.search-box {
+    margin-top: 10px;
+}
+
+
+#custom-search-form {
+    margin: 0;
+    margin-top: 5px;
+    padding: 0;
+}
+

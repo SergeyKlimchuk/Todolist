@@ -18,38 +18,33 @@
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
-            <!--<span class="glyphicon glyphicon glyphicon-cloud"> </span>-->
-
-
-
-
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-
-                <div class="input-group" id="search-box">
-                    <input type="text" class="form-control input-md" placeholder="Search..." id="search-box-input">
-                    <span class="input-group-btn">
-                        <button class="btn btn-secpndary input-md" type="button"><img src="~/Content/Icons/Loop.png" /></button>
-                    </span>
-                </div>
-                
             </div>
             <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-left">
+                    <li style="width: 200px; margin-top: 10px;">
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-addon glyphicon glyphicon-search" id="sizing-addon3" style="top: 0px;"></span>
+                            <input type="text" class="form-control" placeholder="Search" aria-describedby="sizing-addon3">
+                        </div>
+                    </li>
+                </ul>
                 @Html.Partial("_LoginPartial")
             </div>
         </div>
     </div>
+
     <div class="container body-content">
         @RenderBody()
     </div>
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
-    @Scripts.Render("~/Scripts/bootstrap-select.js")
     @RenderSection("scripts", required: false)
 </body>
 </html>

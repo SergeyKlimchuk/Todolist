@@ -19,7 +19,7 @@
                     {
                         string radioChecked = task.LabelModel.Contains(label) ? "checked" : "";
 
-                        <li><a href="" class="small" data-value="@label.Id" tabIndex="-1"><input type="checkbox" name="@task.Id" @radioChecked />@label.Name</a></li>
+                        <li><a class="small" data-value="@label.Id" tabIndex="-1"><input type="checkbox" name="@task.Id" @radioChecked />@label.Name</a></li>
                     }
                 </ul>
             </div>
@@ -34,5 +34,6 @@
 @section scripts {
     @Scripts.Render("~/Scripts/tasks.js")
     @Scripts.Render("~/Scripts/jquery.unobtrusive-ajax.min.js")
+    @Scripts.Render("~/Scripts/bootstrap-select.js")
 }
 

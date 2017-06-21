@@ -4,8 +4,7 @@ $('.dropdown-menu a').on('click', function (event) {
 
     var $target = $(event.currentTarget), // текущий объект
         val = $target.attr('data-value'), // индекс строчки
-        $inp = $target.find('input'),     // ищет input
-        idx;
+        $inp = $target.find('input');     // ищет input
     
     $inp[0].checked = !$inp[0].checked;
 
@@ -29,6 +28,15 @@ $('.dropdown-menu a').on('click', function (event) {
     return false;
 });
 
+// ВХод в диапозон формы
+$('.task-box').on('mouseover', function () {
+    $(this).css('box-shadow', '0 0 10px black');
+});
+
+// Выход из формы
+$('.task-box').on('mouseout', function () {
+    $(this).css('box-shadow', '');
+});
 
 $('.task-text-input').on('blur', function (event) {
     // Текст записи
@@ -65,7 +73,7 @@ $('.task-title-input').on('blur', function (event) {
 
     return false;
 });
-
+/*
 $('.task-title-input, .task-text-input').on('focus', function (event) {
     var $current = $(event.currentTarget);
     var $curParrent = $current.parents('.task-box').css('box-shadow', '0 0 10px black');
@@ -77,3 +85,4 @@ $('.task-title-input, .task-text-input').on('blur', function (event) {
     var $curParrent = $current.parents('.task-box').css('box-shadow', 'none');
     //console.log($curParrent.length);
 });
+*/
