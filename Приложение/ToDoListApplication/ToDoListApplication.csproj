@@ -219,6 +219,7 @@
     <Content Include="Content\Icons\Clock_plus.png" />
     <Content Include="Content\Icons\Label.png" />
     <Content Include="Content\Icons\Label_plus.png" />
+    <Content Include="Content\Icons\Loop.png" />
     <Content Include="Content\Icons\Palette.png" />
     <Content Include="Content\Icons\Palette_plus.png" />
     <Content Include="Content\Tasks.css" />

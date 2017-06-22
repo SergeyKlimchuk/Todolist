@@ -4,8 +4,8 @@
     ViewBag.Title = "Задания";
  }
 @section styles {
-    @Styles.Render("~/Content/Tasks.css")
     @Styles.Render("~/Content/dropdowns-enhancement.css")
+    @Styles.Render("~/Content/Tasks.css")
 }
 
 
@@ -13,17 +13,17 @@
     {
         <div class="row">
 
-            <div class="col-lg-8 col-lg-push-2 task-box">
+            <div class="col-lg-8 col-lg-push-2 task-box" id="@task.Id">
                 <div class="row">
                     <div class="col-xs-11 task-title">
-                        Some text of article title
+                        <input type="text" name="@task.Id" value="@task.Title" />
                     </div>
                     <div class="col-xs-1 task-delete">
-                        X
+                        <span class="glyphicon glyphicon-cloud"></span>
                     </div>
                 </div>
                 <div class="row">
-                    <textarea class="col-xs-12 task-text"></textarea>
+                    <textarea class="col-xs-12 task-text" name="@task.Id" placeholder="Текст задания">@task.Text</textarea>
                 </div>
                 <div class="row">
                     <div class="col-xs-12 task-tags-menu">
@@ -41,27 +41,28 @@
                 </div>
                 <div class="row">
                     <div class="col-xs-12 task-tools-menu">
-                        <span class="glyphicon glyphicon-wrench"></span>
-                        <span class="glyphicon glyphicon-wrench"></span>
-                        <span class="glyphicon glyphicon-wrench"></span>
-                        <div class="btn-group">
-                            <button data-toggle="dropdown" class="btn dropdown-toggle" data-placeholder="Please select"> <span class="caret"></span></button>
+                        <div class="btn-group tool-tag-changer">
+                            <span data-toggle="dropdown" class="glyphicon dropdown-toggle" data-placeholder="false" ></span>
                             <ul class="dropdown-menu">
-                                <li><input type="checkbox" id="ID1"><label for="ID1" name="NAME" value="VALUE">Label</label></li>
-                                <li><input type="checkbox" id="ID2"><label for="ID2" name="NAME" value="VALUE">Label</label></li>
+                                @foreach (var label in ViewBag.LabelsList)
+                                {
+                                    string index = task.Id + "_" + label.Id;
+                                    string check = task.LabelModel.Contains(label) ? "checked" : "";
+                                    <li><input type="checkbox" id="@index" name="@label.Id" @check><label for="@index">@label.Name</label></li>
+                                }
                             </ul>
                         </div>
-                        <!--<div class="row">
-                            <div class="col-xs-2" style="background-color: darkgreen">
-                                <div class="checkbox">
-                                    <label>
-                                        <input type="checkbox" />
-                                        Some time
-                                    </label>
-                                </div>
-                            </div>
-                        </div>-->
-
+                        <div class="btn-group tool-user-changer">
+                            <span data-toggle="dropdown" class="glyphicon dropdown-toggle" data-placeholder="false"></span>
+                            <ul class="dropdown-menu">
+                                @foreach (var label in ViewBag.LabelsList)
+                                {
+                                    string index = task.Id + "_" + label.Id;
+                                    string check = task.LabelModel.Contains(label) ? "checked" : "";
+                                    <li><input type="checkbox" id="@index" name="@label.Id" @check><label for="@index">@label.Name</label></li>
+                                }
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -70,8 +71,9 @@
     }
 
 @section scripts {
-    @Scripts.Render("~/Scripts/tasks.js")
+    
     @Scripts.Render("~/Scripts/dropdowns-enhancement.js")
+    @Scripts.Render("~/Scripts/tasks.js")
 }
 
 @*

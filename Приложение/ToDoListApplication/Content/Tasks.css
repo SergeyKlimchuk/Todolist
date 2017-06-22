@@ -14,7 +14,21 @@ body {
 }
 
 .task-title {
-    background-color: yellow;
+    background-color: transparent;
+    color: #C0C1C3;
+    font-weight: bold;
+}
+
+.task-title input[type=text] {
+    background-color: transparent;
+    resize: none;
+    width: 100%;
+    max-width: none;
+    margin-top: 5px;
+    margin: 0px;
+    border: none;
+    border-bottom: 1px rgba(0, 0, 0, .2) solid;
+    overflow: auto;
 }
 
 .task-delete {
@@ -22,8 +36,16 @@ body {
 }
 
 .task-text {
-    background-color: brown;
+    background-color: transparent;
+    resize: none;
+    width: 100%;
+    max-width: none;
+    color: #F5F5F5;
+    border: none;
+    font-size: 14px;
+    overflow: hidden;
 }
+
 
 .task-tags-menu {
     background-color: aqua;
@@ -34,7 +56,29 @@ body {
 }
 
 .task-tools-menu {
-    background-color: cornflowerblue;
+    background-color: #21262A;
+}
+
+.tool-tag-changer > span, .tool-user-changer > span {
+    width: 24px;
+    height: 24px;
+}
+
+
+.tool-tag-changer > span {
+    background-image: url('Icons/Label_plus.png');
+}
+
+.tool-tag-changer.open > span {
+    background-image: url('Icons/Label.png');
+}
+
+.tool-user-changer > span {
+    background-image: url('Icons/Authors_plus.png');
+}
+
+.tool-user-changer.open > span {
+    background-image: url('Icons/Authors.png');
 }
 
 /*
