@@ -6,6 +6,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using ToDoListApplication.Models;
+using System.Data.SqlClient;
 
 namespace ToDoListApplication.Controllers
 {
@@ -13,7 +14,35 @@ namespace ToDoListApplication.Controllers
     {
         // Кол-во записей на странице
         const int PAGE_COUNT = 10;
-        
+
+
+        // Добавить пользователю друга
+        private void AddFriend(string recipientId, string friendId)
+        {
+            try
+            {
+                DataContext context = new DataContext();
+
+                if (recipientId == friendId) throw new Exception("Recepient Id and Friend Id is equal!");
+
+                bool contains = context.FriendsModels.Where(
+                    f => (f.UserId == recipientId && f.FriendId == friendId) || (f.UserId == friendId && f.FriendId == recipientId)
+                    ).Count() > 0;
+
+                if (contains)
+                {
+                    return;
+                }
+
+                context.FriendsModels.Add(new UserFriend() { UserId = recipientId, FriendId = friendId });
+                context.SaveChanges();
+            }
+            catch
+            {
+
+            }
+
+        }
 
         // Нужно добавлять ярлыки при помощи AJAX запросов.
         private void AddLabel(LabelModel label)
@@ -34,22 +63,68 @@ namespace ToDoListApplication.Controllers
             dataContext.SaveChanges();
         }
 
+        
+
+
+
+        // Получить список всех пользователей
+        private string GetUser(string id = null,  string email = null)
+        {
+            string connectionString = @"Data Source=(LocalDb)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\aspnet-ToDoListApplication-20170614114620.mdf;Initial Catalog=aspnet-ToDoListApplication-20170614114620;Integrated Security=True";
+            SqlConnection connection = new SqlConnection(connectionString);
+
+
+            bool multyChoose = false;
+            string commandString = "SELECT * FROM AspNetUsers WHERE";
+            
+            try
+            {
+                connection.Open();
+                // Проверка на пустые аргументы
+                if (string.IsNullOrEmpty(id) && string.IsNullOrEmpty(email))
+                {
+                    return null;
+                }
+
+                if (id != null)
+                {
+                    multyChoose = true;
+                    commandString += " Id=" + id;
+                }
+
+                if (email != null)
+                {
+                    if (multyChoose) commandString += " AND";
+                    commandString += " Email='" + email + "'";
+                }
+
+                SqlCommand command = new SqlCommand(commandString, connection);
+                SqlDataReader reader = command.ExecuteReader();
+                string dd = reader.ToString();
+                List<string> usersList = new List<string>();
+
+                while (reader.Read())
+                {
+                    usersList.Add(reader[0].ToString());
+                }
+                return usersList.Count == 0 ? null : usersList[0];
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+                connection.Close();
+            }
+
+
+            return null;
+        }
+        
         public ActionResult EditLabel(int taskId, int labelId, string actionId)
         {
-            // ищем запись по ид
-            // ищем ярлык по ид
-            // проверяем на присетствие этого ярлыка в списке ярлыков записи
-
-
-            /* Если действие будет направленно на добавление
-             * TRUE:
-             *      (если ярлыка нет в списке - то добавим), (если есть - ничего не делаем, возможно ошибочный запрос)
-             * FALSE:
-             *      (если ярлыка нет - ничего не делаем), (если есть -удаляем его из списка)
-             */
-
-            // сохраняем
-            
+            // Подключаем контекст
             DataContext dataContext = new DataContext();
             // Ищем запись
             TaskModel task = dataContext.TaskModels.Include(t => t.LabelModel).Where(t => t.Id == taskId).ToList()[0];
@@ -105,42 +180,29 @@ namespace ToDoListApplication.Controllers
 
             return new EmptyResult();
         }
-
-        private void AddToBase()
-        {
-            string userId = User.Identity.GetUserId();
-            DataContext dataContext = new DataContext();
-            LabelModel label1 = new LabelModel { Name = "Дом", Color = System.Drawing.Color.Azure, AuthorId= userId };
-            LabelModel label2 = new LabelModel { Name = "Работа", Color = System.Drawing.Color.Purple, AuthorId = userId };
-            List<LabelModel> labels = new List<LabelModel> { label1, label2 };
-            dataContext.LabelModels.AddRange(labels);
-            dataContext.SaveChanges();
-
-            TaskModel task1 = new TaskModel { Title = "Хлебушек", Text = "Купить хлебушка, вспомнить что сам хлебушек", LabelModel = new List<LabelModel> { label1, label2 }, AuthorId = userId };
-            task1.AlarmTime = DateTime.Now;
-            TaskModel task2 = new TaskModel { Title= "Отчет", Text="Сдать отчет г. директору предприятия 'ЦЕСНА'", LabelModel = new List<LabelModel> { label1 }, AuthorId = userId };
-            task2.AlarmTime = DateTime.Now;
-            dataContext.TaskModels.AddRange(new List<TaskModel> { task1, task2 });
-            dataContext.SaveChanges();
-        }
-
+        
         public ActionResult Index()
         {
-            //dataContext = new TaskViewModels();
-            
+            string user1Id = GetUser(email: "sergeyklim@live.ru");
+            string user2Id = GetUser(email: "sd-2030@mail.ru");
+
+            AddFriend(user1Id, user2Id);
+
+
             return View();
         }
 
         [HttpGet]
         public ActionResult Tasks(int? page = null)
         {
+            //AddToBase();
             // Контекст данных
             DataContext dataContext = new DataContext(); //AddToBase();
-            
-            var taskList = dataContext.TaskModels.Include(p => p.LabelModel);
-
+            // Определяем id пользователя
             var userId = User.Identity.GetUserId();
 
+            var taskList = dataContext.TaskModels.Include(p => p.LabelModel).Where(t => t.AuthorId == userId);
+            
             if (string.IsNullOrEmpty(userId)) Response.Redirect("/");
 
             List<LabelModel> labelsList = dataContext.LabelModels.Where(l => l.AuthorId == userId).ToList();
@@ -189,5 +251,31 @@ namespace ToDoListApplication.Controllers
 
             return View(tasks);
         }
+
+
+
+
+        /* --- TEST PLACE --- */
+
+        // заполнить таблицу 
+        private void AddToBase()
+        {
+            string userId = User.Identity.GetUserId();
+            DataContext dataContext = new DataContext();
+            LabelModel label1 = new LabelModel { Name = "Дом", Color = System.Drawing.Color.Azure, AuthorId = userId };
+            LabelModel label2 = new LabelModel { Name = "Работа", Color = System.Drawing.Color.Purple, AuthorId = userId };
+            List<LabelModel> labels = new List<LabelModel> { label1, label2 };
+            dataContext.LabelModels.AddRange(labels);
+            dataContext.SaveChanges();
+
+            TaskModel task1 = new TaskModel { Title = "Хлебушек", Text = "Купить хлебушка, вспомнить что сам хлебушек", LabelModel = new List<LabelModel> { label1, label2 }, AuthorId = userId };
+            task1.AlarmTime = DateTime.Now;
+            TaskModel task2 = new TaskModel { Title = "Отчет", Text = "Сдать отчет г. директору предприятия 'ЦЕСНА'", LabelModel = new List<LabelModel> { label1 }, AuthorId = userId };
+            task2.AlarmTime = DateTime.Now;
+            dataContext.TaskModels.AddRange(new List<TaskModel> { task1, task2 });
+            dataContext.SaveChanges();
+        }
+
+        
     }
 }

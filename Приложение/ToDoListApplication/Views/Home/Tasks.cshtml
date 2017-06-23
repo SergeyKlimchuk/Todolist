@@ -1,4 +1,5 @@
 ﻿@using ToDoListApplication.Models
+
 @model IEnumerable<TaskModel>
 @{ 
     ViewBag.Title = "Задания";
@@ -8,6 +9,60 @@
     @Styles.Render("~/Content/Tasks.css")
 }
 
+        <div class="row">
+            <div class="task-box">
+                <div class="row">
+                    <div class="col-xs-11 task-title">
+                        <input type="text" name="TaskTitle" placeholder="Текст заголовка" />
+                    </div>
+                    <div class="col-xs-1 task-delete">
+                        <span class="glyphicon glyphicon-cloud"></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <textarea class="col-xs-12 task-text" name="TaskText" placeholder="Текст задания"></textarea>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 task-tags-menu">
+                        <span class="glyphicon glyphicon-tag pull-right"></span>
+                        <span class="glyphicon glyphicon-tag pull-right"></span>
+                        <span class="glyphicon glyphicon-tag pull-right"></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 task-users-menu">
+                        <span class="glyphicon glyphicon-user pull-right"></span>
+                        <span class="glyphicon glyphicon-user pull-right"></span>
+                        <span class="glyphicon glyphicon-user pull-right"></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 task-tools-menu">
+                        <div class="btn-group tool-tag-changer">
+                            <span data-toggle="dropdown" class="glyphicon dropdown-toggle" data-placeholder="false"></span>
+                            <ul class="dropdown-menu labels-menu">
+                                @foreach (var label in ViewBag.LabelsList)
+                                {
+                                    string LabelId = "Label_" + label.Id;
+                                    <li><input type="checkbox" id="@LabelId" data-target="@label.Id" /><label for="@LabelId">@label.Name</label></li>
+                                }
+                            </ul>
+                        </div>
+                        <div class="btn-group tool-user-changer">
+                            <span data-toggle="dropdown" class="glyphicon dropdown-toggle" data-placeholder="false"></span>
+                            <ul class="dropdown-menu">
+                                @foreach (var label in ViewBag.LabelsList)
+                                {
+                                    //string index = task.Id + "_" + label.Id;
+                                    //string check = task.LabelModel.Contains(label) ? "checked" : "";
+                                    //<li><input type="checkbox" id="@index" name="@label.Id" @check><label for="@index">@label.Name</label></li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
     @foreach (var task in Model)
     {
@@ -43,12 +98,12 @@
                     <div class="col-xs-12 task-tools-menu">
                         <div class="btn-group tool-tag-changer">
                             <span data-toggle="dropdown" class="glyphicon dropdown-toggle" data-placeholder="false" ></span>
-                            <ul class="dropdown-menu">
+                            <ul class="dropdown-menu labels-menu">
                                 @foreach (var label in ViewBag.LabelsList)
                                 {
                                     string index = task.Id + "_" + label.Id;
                                     string check = task.LabelModel.Contains(label) ? "checked" : "";
-                                    <li><input type="checkbox" id="@index" name="@label.Id" @check><label for="@index">@label.Name</label></li>
+                                    <li><input type="checkbox" id="@index" data-target="@label.Id" @check /><label for="@index">@label.Name</label></li>
                                 }
                             </ul>
                         </div>
@@ -75,38 +130,3 @@
     @Scripts.Render("~/Scripts/dropdowns-enhancement.js")
     @Scripts.Render("~/Scripts/tasks.js")
 }
-
-@*
-    @foreach (var task in Model)
-    {
-        <form class="col-lg-8 col-lg-push-2 task-box" style="padding: 0;">
-            <input type="text" class="form-control task-title-input" name="@task.Id" value="@task.Title" placeholder="Title" />
-            <input type="text" class="form-control task-text-input" name="@task.Id" value="@task.Text" placeholder="Title" />
-            <div class="col-lg-12 task-tools-menu">
-
-                <div class="button-group">
-                    <button type="button" class="btn btn-xs dropdown-toggle menu-button" data-toggle="dropdown"><img src="~/Content/Icons/Label_plus.png" /></button>
-                    <ul class="dropdown-menu">
-                        <li role="presentation" class="text-center dropdown-header">Добавить ярлык</li>
-                        @foreach (LabelModel label in ViewBag.LabelsList)
-                        {
-                            string radioChecked = task.LabelModel.Contains(label) ? "checked" : "";
-
-                            <li><a class="small" data-value="@label.Id" tabIndex="-1"><input type="checkbox" name="@task.Id" @radioChecked />@label.Name</a></li>
-                        }
-                    </ul>
-                </div>
-
-            </div>
-        </form>
-    }
-    <div style="width: 200px; height: 200px; background-color: red; display: none;" id="RareBlock">
-
-    </div>
-
-    @section scripts {
-        @Scripts.Render("~/Scripts/tasks.js")
-        @Scripts.Render("~/Scripts/jquery.unobtrusive-ajax.min.js")
-        @Scripts.Render("~/Scripts/bootstrap-select.js")
-    }
-*@
