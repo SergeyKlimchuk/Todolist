@@ -14,7 +14,7 @@ namespace ToDoListApplication.Controllers
     {
         // Кол-во записей на странице
         const int PAGE_COUNT = 10;
-
+        
 
         // Добавить пользователю друга
         private void AddFriend(string recipientId, string friendId)
@@ -23,7 +23,7 @@ namespace ToDoListApplication.Controllers
             {
                 DataContext context = new DataContext();
 
-                if (recipientId == friendId) throw new Exception("Recepient Id and Friend Id is equal!");
+                if (recipientId == friendId) throw new Exception("Идентификаторы идентичны, системная ошибка!");
 
                 bool contains = context.FriendsModels.Where(
                     f => (f.UserId == recipientId && f.FriendId == friendId) || (f.UserId == friendId && f.FriendId == recipientId)
@@ -44,6 +44,33 @@ namespace ToDoListApplication.Controllers
 
         }
 
+        // Получить список друзей текущего пользователя
+        private List<UserRecord> GetFriends()
+        {
+            DataContext context = new DataContext();
+
+            // Получаем идентификаторы друзей
+            var friendsId = context.FriendsModels
+                .Select(x => x).ToList()
+                .Select(x=>x.IdentifyFriend(User.Identity.GetUserId())).ToArray();
+
+            // Настраиваем запрос
+            string connectionString = @"Data Source=(LocalDb)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\aspnet-ToDoListApplication-20170614114620.mdf;Initial Catalog=aspnet-ToDoListApplication-20170614114620;Integrated Security=True";
+            SqlConnection connection = new SqlConnection(connectionString);
+            string commandString = String.Format("SELECT * FROM AspNetUsers WHERE Id IN ('{0}')", String.Join("', '", friendsId));
+            SqlCommand command = new SqlCommand(commandString, connection);
+            connection.Open();
+            SqlDataReader reader = command.ExecuteReader();
+            
+            List<UserRecord> usersRecords = new List<UserRecord>();
+            
+            while (reader.Read())
+                usersRecords.Add(new UserRecord { Id = (string)reader[0], Email = (string)reader[1] });
+            connection.Close();
+
+            return usersRecords;
+        }
+
         // Нужно добавлять ярлыки при помощи AJAX запросов.
         private void AddLabel(LabelModel label)
         {
@@ -54,6 +81,7 @@ namespace ToDoListApplication.Controllers
             dataContext.SaveChanges();
         }
 
+        // Добавить задание
         private void AddTask(TaskModel task)
         {
             // Подключаемся к базе
@@ -122,6 +150,9 @@ namespace ToDoListApplication.Controllers
             return null;
         }
         
+
+
+
         public ActionResult EditLabel(int taskId, int labelId, string actionId)
         {
             // Подключаем контекст
@@ -183,10 +214,6 @@ namespace ToDoListApplication.Controllers
         
         public ActionResult Index()
         {
-            string user1Id = GetUser(email: "sergeyklim@live.ru");
-            string user2Id = GetUser(email: "sd-2030@mail.ru");
-
-            AddFriend(user1Id, user2Id);
 
 
             return View();
@@ -278,4 +305,30 @@ namespace ToDoListApplication.Controllers
 
         
     }
+
+
+    // Нужно вынести в отдельный класс
+    public static class FriendModul
+    {
+        public static string IdentifyFriend(this UserFriend userFriendRecord, string currentUserId)
+        {
+            if (userFriendRecord != null && userFriendRecord.UserId != null && userFriendRecord.FriendId != null)
+            {
+                return userFriendRecord.UserId == currentUserId ? userFriendRecord.FriendId : userFriendRecord.UserId;
+            }
+            else
+            {
+                throw new ArgumentNullException("Запись пуста");
+            }
+            throw new ArgumentException("Внезапная ошибка!");
+        }
+    }
+
+    public class UserRecord
+    {
+        public string Id { get; set; }
+        public string Email { get; set; }
+
+    }
+
 }
