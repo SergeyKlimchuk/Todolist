@@ -17,6 +17,7 @@
         public virtual DbSet<TaskModel> TaskModels { get; set; }
         public virtual DbSet<LabelModel> LabelModels { get; set; }
         public virtual DbSet<UserFriend> FriendsModels { get; set; }
+        public virtual DbSet<UserIdModel> UserIdModels { get; set; }
     }
     
 }

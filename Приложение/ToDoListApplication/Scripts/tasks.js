@@ -1,5 +1,5 @@
-// Отправка изменений при изменении тегов
-$('.dropdown-menu.labels-menu li').on('click', function (event) {
+// Отправка изменений о теге задачи
+$('.dropdown-menu.labels-menu.editer li').on('click', function (event) {
 
     // Текущий элемент
     var $current = $(event.currentTarget);
@@ -28,6 +28,36 @@ $('.dropdown-menu.labels-menu li').on('click', function (event) {
     return false;
 });
 
+// Отправка изменений пользователей задачи
+$('.dropdown-menu.users-menu.editer li').on('click', function (event) {
+
+    // Текущий элемент
+    var $current = $(event.currentTarget);
+    // Checkbox
+    var $checkbox = $current.find('input');
+
+    // Берем ид записи
+    $taskId = $current.parents('.task-box').attr('id');
+    // Берем ид ярлыка
+    $userId = $checkbox.attr('data-target');
+    // Берем статус
+    $userStatus = !$checkbox[0].checked;
+    // Меняем значение checkbox'а
+    $checkbox[0].checked = $userStatus;
+    
+    // Отправляем AJAX-запрос
+    $.ajax({
+        url: "/Home/EditTaskUser",
+        type: "GET",
+        data: "taskId=" + $taskId + "&userId=" + $userId + "&actionId=" + $userStatus,
+        success: function (response) { }
+    });
+    
+    // Отладка
+    //console.log("taskId: " + $taskId + ", LabelId: " + $labelId + ", status: " + $labelStatus); // отладка
+    return false;
+});
+
 // Устанавливаем тень при входе в диапозон формы
 $('.task-box').on('mouseover', function () {
     $(this).css('box-shadow', '0 0 10px black');
@@ -39,7 +69,7 @@ $('.task-box').on('mouseout', function () {
 });
 
 // Отправка изменений в тексте записи
-$('.task-text').on('blur', function (event) {
+$('.task-text.editer').on('blur', function (event) {
     // Берем текст записи
     $text = $(event.currentTarget).val();
     // Берем уникальный идентификатор записи
@@ -59,7 +89,7 @@ $('.task-text').on('blur', function (event) {
 });
 
 // Отправка изменений в заголовке задачи
-$('.task-title input').on('blur', function (event) {
+$('.task-title.editer input').on('blur', function (event) {
     // Берем текст заголовка записи
     $text = $(event.currentTarget).val();
     // Берем уникальный идентификатор записи
@@ -88,3 +118,25 @@ $('textarea').on('keydown', function () {
         el.style.cssText = 'height:' + el.scrollHeight + 'px';
     }, 0);
 });
+
+function SetTegsLineById(id) {
+    var $element = $('.task-box#' + id);
+    // Массив 
+    var $LiList = $($element).find('.labels-menu li');
+    // Строка с тегами
+    var $tagsLine = $($element).find('.task-tags-menu');
+    //$tagsLine.empty();
+
+    for (var item = 0; item < $LiList.length; item++) {
+        var $checkBox = $($LiList[item]).find('input:checkbox')[0];
+        var $labelText = $($LiList[item]).find('label').text();
+        console.log($checkBox);
+
+        if ($checkBox.checked) {
+            $($tagsLine).append($("<span class='label-segment pull-right'>SOME</span>"));
+        }
+        
+        
+    }
+    
+}

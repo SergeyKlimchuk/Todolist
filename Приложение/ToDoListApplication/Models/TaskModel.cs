@@ -12,10 +12,12 @@ namespace ToDoListApplication.Models
         public string AuthorId { get; set; }
         
         public ICollection<LabelModel> LabelModel { get; set; }
+        public ICollection<UserIdModel> Friend { get; set; }
 
         public TaskModel()
         {
             LabelModel = new List<LabelModel>();
+            Friend = new List<UserIdModel>();
         }
         
     }
