@@ -331,7 +331,7 @@ namespace ToDoListApplication.Controllers
 
         #endregion
 
-        #region События страниц
+        #region Обработчики страниц
 
         public ActionResult Index()
         {
@@ -446,5 +446,4 @@ namespace ToDoListApplication.Controllers
         }
     }
     
-
 }
