@@ -9,14 +9,14 @@
     @Styles.Render("~/Content/Tasks.css")
 }
 
-        <div class="row">
+        <div class="row fromAdd">
             <div class="col-lg-8 col-lg-push-2 task-box">
                 <div class="row">
                     <div class="col-xs-11 task-title">
                         <input type="text" name="TaskTitle" placeholder="Текст заголовка" />
                     </div>
                     <div class="col-xs-1 task-delete">
-                        <span class="glyphicon glyphicon-cloud"></span>
+                        <span class="glyphicon btn-xs" title="Очистить">X</span>
                     </div>
                 </div>
                 <div class="row">
@@ -24,23 +24,19 @@
                 </div>
                 <div class="row">
                     <div class="col-xs-12 task-tags-menu">
-                        <span class="glyphicon glyphicon-tag pull-right"></span>
-                        <span class="glyphicon glyphicon-tag pull-right"></span>
-                        <span class="glyphicon glyphicon-tag pull-right"></span>
+
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-xs-12 task-users-menu">
-                        <span class="glyphicon glyphicon-user pull-right"></span>
-                        <span class="glyphicon glyphicon-user pull-right"></span>
-                        <span class="glyphicon glyphicon-user pull-right"></span>
+
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-xs-12 task-tools-menu">
                         <div class="btn-group tool-tag-changer">
                             <span data-toggle="dropdown" class="glyphicon dropdown-toggle" data-placeholder="false"></span>
-                            <ul class="dropdown-menu labels-menu">
+                            <ul class="dropdown-menu labels-menu" name="LabelsList">
                                 @foreach (var label in ViewBag.LabelsList)
                                 {
                                     <li><input type="checkbox" id="Label_@label.Id" /><label for="Label_@label.Id">@label.Name</label></li>
@@ -49,7 +45,7 @@
                         </div>
                         <div class="btn-group tool-user-changer">
                             <span data-toggle="dropdown" class="glyphicon dropdown-toggle" data-placeholder="false"></span>
-                            <ul class="dropdown-menu">
+                            <ul class="dropdown-menu" name="UsersList">
                                 
                                 @foreach (var friend in ViewBag.FriendsList)
                                 {
@@ -57,6 +53,7 @@
                                 }
                             </ul>
                         </div>
+                        <div class="btn btn-xs btn-success pull-right" id="addBtn">Добавить</div>
                     </div>
                 </div>
             </div>
@@ -72,7 +69,7 @@
                         <input type="text" name="@task.Id" value="@task.Title" />
                     </div>
                     <div class="col-xs-1 task-delete editer">
-                        <span class="glyphicon glyphicon-cloud"></span>
+                        <span class="glyphicon btn-xs" data-target="@task.Id">X</span>
                     </div>
                 </div>
                 <div class="row">
@@ -80,16 +77,12 @@
                 </div>
                 <div class="row">
                     <div class="col-xs-12 task-tags-menu">
-                        <span class="glyphicon glyphicon-tag pull-right"></span>
-                        <span class="glyphicon glyphicon-tag pull-right"></span>
-                        <span class="glyphicon glyphicon-tag pull-right"></span>
+
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-xs-12 task-users-menu">
-                        <span class="glyphicon glyphicon-user pull-right"></span>
-                        <span class="glyphicon glyphicon-user pull-right"></span>
-                        <span class="glyphicon glyphicon-user pull-right"></span>
+
                     </div>
                 </div>
                 <div class="row">

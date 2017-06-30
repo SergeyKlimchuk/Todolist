@@ -1,0 +1,55 @@
+﻿@using ToDoListApplication.Models
+@model TaskModel
+        <div class="row">
+
+            <div class="col-lg-8 col-lg-push-2 task-box" id="@Model.Id">
+                <div class="row">
+                    <div class="col-xs-11 task-title editer">
+                        <input type="text" name="@Model.Id" value="@Model.Title" />
+                    </div>
+                    <div class="col-xs-1 task-delete editer">
+                        <span class="glyphicon btn-xs" data-target="@Model.Id">X</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <textarea class="col-xs-12 task-text editer" name="@Model.Id" placeholder="Текст задания">@Model.Text</textarea>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 task-tags-menu">
+
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 task-users-menu">
+
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 task-tools-menu">
+                        <div class="btn-group tool-tag-changer">
+                            <span data-toggle="dropdown" class="glyphicon dropdown-toggle" data-placeholder="false" ></span>
+                            <ul class="dropdown-menu labels-menu editer">
+                                @foreach (var label in ViewBag.LabelsList)
+                                {
+                                    string index = Model.Id + "_" + label.Id;
+                                    string check = Model.LabelModel.Contains(label) ? "checked" : "";
+                                    <li><input type="checkbox" id="@index" data-target="@label.Id" @check /><label for="@index">@label.Name</label></li>
+                                }
+                            </ul>
+                        </div>
+                        <div class="btn-group tool-user-changer">
+                            <span data-toggle="dropdown" class="glyphicon dropdown-toggle" data-placeholder="false"></span>
+                            <ul class="dropdown-menu users-menu editer">
+                                @foreach (UserRecord friend in ViewBag.FriendsList)
+                                {
+                                    string index = Model.Id + "_" + friend.Id;
+                                    string check = (Model.Friend.Where(x => x.FriendId == friend.Id).Count() > 0) ? "checked" : "notchecked";
+                                    <li><input type="checkbox" id="@index" data-target="@friend.Id" @check><label for="@index">@friend.Email</label></li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
