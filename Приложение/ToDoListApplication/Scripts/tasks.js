@@ -239,7 +239,7 @@ function TextAreaResize() {
 // Отправка изменений в заголовке задачи
 $('.task-title.editer input').on('blur', TaskTitleEdit);
 // Удаление записи
-$('.task-delete.editer span').on('click', DeleteTask);
+$('.btn-exit.editer').on('click', DeleteTask);
 // Отправка изменений в тексте записи
 $('.task-text.editer').on('blur', TaskTextEdit);
 // Отправка изменений о ярлыке задачи
@@ -296,7 +296,7 @@ $('#addBtn').on('click', function () {
             });
         }
     }
-    
+    console.log({ Text: $text, Title: $title, LabelModel: labelsList, Friend: usersList });
     // Отправляем AJAX-запрос
     $.ajax({
         url: "/Home/AddTaskAndGetView",
@@ -316,14 +316,11 @@ function AddNewTask(response) {
 
     // Добавление сегмента из принятого
     $(response).insertAfter('.fromAdd');
-
-    // Показ линий
-    SetLines(taskId);
-
+    
     // Находим задание
     var $task = $('.task-box#' + taskId);
     // Добавляем возможность удаления
-    $task.find('.task-delete.editer span').on('click', DeleteTask);
+    $task.find('.btn-exit.editer').on('click', DeleteTask);
     // Добавляем возможность редактирования ярлыков
     $task.find('.dropdown-menu.labels-menu.editer li').on('click', LabelEdit);
     // Добавляем возможность редактирования пользователей
@@ -332,6 +329,9 @@ function AddNewTask(response) {
     $task.find('.task-title.editer input').on('blur', TaskTitleEdit);
     // Добавляем возможность изменить текст
     $task.find('.task-text.editer').on('blur', TaskTextEdit);
+
+    // Показ линий
+    SetLines(taskId);
 
     // Очистка формы добавления
     ClearAddFrom();

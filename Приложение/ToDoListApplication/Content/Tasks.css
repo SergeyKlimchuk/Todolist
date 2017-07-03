@@ -6,6 +6,10 @@ body {
     background-color: #FAFBFC;
 }
 
+.body-content > .row{
+    padding: 0px 10px;
+}
+
 .task-box {
     background-color: #3F4448;
     border-radius: 4px;
@@ -34,23 +38,6 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-}
-
-.task-delete > span {
-    background-color: #333;
-    width: 24px;
-    height: 24px;
-    border-radius: 10px;
-    font-size: 14px;
-    text-align: center;
-    font-weight: bold;
-    color: white;
-    top: 0px;
-    cursor: pointer;
-}
-
-.task-delete > span:hover {
-    box-shadow: 0 0 3px #4168A6;
 }
 
 #addBtn {
@@ -90,11 +77,13 @@ body {
     width: 24px;
     height: 24px;
     top: 0px;
-    cursor:  pointer;
+    cursor: pointer;
+    transition: .2s;
 }
 
 .tool-tag-changer > span:hover, .tool-user-changer > span:hover {
     background-color: #75CA84;
+    transition: .2s;
 }
 
 
@@ -126,5 +115,29 @@ body {
     border: 1px solid #ccc;
 }
 
+.task-delete{
+    padding: 2px;
+}
 
+.btn-exit {
+    border-radius: 12px;
+    border: solid 2px #21262A;
+    color: #21262A;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    transition: .2s;
+}
 
+.btn-exit > span{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.btn-exit:hover{
+    color: #C92E2E;
+    border-color: #C92E2E;
+    transition: .2s;
+}

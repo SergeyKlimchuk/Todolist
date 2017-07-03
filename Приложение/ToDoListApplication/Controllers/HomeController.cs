@@ -176,7 +176,7 @@ namespace ToDoListApplication.Controllers
             try
             {
                 // Ищем запись
-                var task = dataContext.TaskModels.Include(t => t.Friend).Single(t => t.Id == taskId);
+                TaskModel task = dataContext.TaskModels.Include(t => t.Friend).Single(t => t.Id == taskId);
                 // Пользователь который должен быть удален из задачи
                 UserIdModel user = null;
                 if (actionId == "true")
