@@ -45,7 +45,7 @@
                                 @foreach (UserRecord friend in ViewBag.FriendsList)
                                 {
                                     string index = Model.Id + "_" + friend.Id;
-                                    string check = (Model.Friend.Where(x => x.FriendId == friend.Id).Count() > 0) ? "checked" : "notchecked";
+                                    string check = (Model.UsersIds.Where(x => x.Value == friend.Id).Count() > 0) ? "checked" : "notchecked";
                                     <li><input type="checkbox" id="@index" data-target="@friend.Id" @check><label for="@index">@friend.Email</label></li>
                                 }
                             </ul>

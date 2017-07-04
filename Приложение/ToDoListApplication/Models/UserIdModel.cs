@@ -5,13 +5,22 @@ using System.Web;
 
 namespace ToDoListApplication.Models
 {
-    public class UserIdModel
+    /// <summary>
+    /// Структура хранящая идентификатор пользователя
+    /// </summary>
+    public class UserId
     {
+        /// <summary>
+        /// Идентификатор записи
+        /// </summary>
         public int Id { get; set; }
-        public string FriendId { get; set; }
+        /// <summary>
+        /// Идентификатор пользователя
+        /// </summary>
+        public string Value { get; set; }
         public ICollection<TaskModel> TaskModel { get; set; }
 
-        public UserIdModel()
+        public UserId()
         {
             TaskModel = new List<TaskModel>();
         }
