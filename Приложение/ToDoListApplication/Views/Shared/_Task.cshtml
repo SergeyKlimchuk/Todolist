@@ -31,22 +31,27 @@
                         <div class="btn-group tool-tag-changer">
                             <span data-toggle="dropdown" class="glyphicon dropdown-toggle" data-placeholder="false" ></span>
                             <ul class="dropdown-menu labels-menu editer">
-                                @foreach (var label in ViewBag.LabelsList)
+                                @foreach (LabelModel label in ViewBag.LabelsList)
                                 {
                                     string index = Model.Id + "_" + label.Id;
-                                    string check = Model.LabelModel.Contains(label) ? "checked" : "";
-                                    <li><input type="checkbox" id="@index" data-target="@label.Id" @check /><label for="@index">@label.Name</label></li>
+                                    string check = Model.Labels.Contains(label) ? "checked" : "";
+                                    <li>
+                                        <input type="checkbox" id="@index" data-target="@label.Id" @check /><label for="@index">@label.Text</label>
+                                    </li>
                                 }
+                                <li class="labelAddBtn text-center">Добавить ярлык <b>+</b></li>
                             </ul>
                         </div>
                         <div class="btn-group tool-user-changer">
                             <span data-toggle="dropdown" class="glyphicon dropdown-toggle" data-placeholder="false"></span>
                             <ul class="dropdown-menu users-menu editer">
-                                @foreach (UserRecord friend in ViewBag.FriendsList)
+                                @foreach (ApplicationUser friend in ViewBag.FriendsList)
                                 {
                                     string index = Model.Id + "_" + friend.Id;
-                                    string check = (Model.UsersIds.Where(x => x.Value == friend.Id).Count() > 0) ? "checked" : "notchecked";
-                                    <li><input type="checkbox" id="@index" data-target="@friend.Id" @check><label for="@index">@friend.Email</label></li>
+                                    string check = Model.Users.Contains(friend) ? "checked" : "";
+                                    <li>
+                                        <input type="checkbox" id="@index" data-target="@friend.Id" @check><label for="@index">@friend.Email</label>
+                                    </li>
                                 }
                             </ul>
                         </div>

@@ -39,17 +39,16 @@
                         <div class="btn-group tool-tag-changer">
                             <span data-toggle="dropdown" class="glyphicon dropdown-toggle" data-placeholder="false"></span>
                             <ul class="dropdown-menu labels-menu" name="LabelsList">
-                                @foreach (var label in ViewBag.LabelsList)
+                                @foreach (LabelModel label in ViewBag.LabelsList)
                                 {
-                                    <li><input type="checkbox" id="Label_@label.Id" /><label for="Label_@label.Id">@label.Name</label></li>
+                                    <li><input type="checkbox" id="Label_@label.Id" /><label for="Label_@label.Id">@label.Text</label></li>
                                 }
                             </ul>
                         </div>
                         <div class="btn-group tool-user-changer">
                             <span data-toggle="dropdown" class="glyphicon dropdown-toggle" data-placeholder="false"></span>
                             <ul class="dropdown-menu" name="UsersList">
-                                
-                                @foreach (var friend in ViewBag.FriendsList)
+                                @foreach (ApplicationUser friend in ViewBag.FriendsList)
                                 {
                                     <li><input type="checkbox" id="Friend_@friend.Id" /><label for="Friend_@friend.Id">@friend.Email</label></li>
                                 }
@@ -61,64 +60,12 @@
             </div>
         </div>
 
-    @foreach (var task in Model)
+    @foreach (TaskModel task in Model)
     {
-        <div class="row">
-
-            <div class="col-lg-6 col-lg-push-3 task-box" id="@task.Id">
-                <div class="row">
-                    <div class="col-xs-11 task-title editer">
-                        <input type="text" name="@task.Id" value="@task.Title" />
-                    </div>
-                    <div class="col-xs-1 task-delete editer">
-                        <span class="btn-exit editer" data-target="@task.Id" title="Удалить задание">
-                            <span>x</span>
-                        </span>
-                    </div>
-                </div>
-                <div class="row">
-                    <textarea class="col-xs-12 task-text editer" name="@task.Id" placeholder="Текст задания">@task.Text</textarea>
-                </div>
-                <div class="row">
-                    <div class="col-xs-12 task-tags-menu">
-
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-xs-12 task-users-menu">
-
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-xs-12 task-tools-menu">
-                        <div class="btn-group tool-tag-changer">
-                            <span data-toggle="dropdown" class="glyphicon dropdown-toggle" data-placeholder="false" ></span>
-                            <ul class="dropdown-menu labels-menu editer">
-                                @foreach (var label in ViewBag.LabelsList)
-                                {
-                                    string index = task.Id + "_" + label.Id;
-                                    string check = task.LabelModel.Contains(label) ? "checked" : "";
-                                    <li><input type="checkbox" id="@index" data-target="@label.Id" @check /><label for="@index">@label.Name</label></li>
-                                }
-                            </ul>
-                        </div>
-                        <div class="btn-group tool-user-changer">
-                            <span data-toggle="dropdown" class="glyphicon dropdown-toggle" data-placeholder="false"></span>
-                            <ul class="dropdown-menu users-menu editer">
-                                @foreach (UserRecord friend in ViewBag.FriendsList)
-                                {
-                                    string index = task.Id + "_" + friend.Id;
-                                    string check = (task.UsersIds.Where(x => x.Value == friend.Id).Count() > 0) ? "checked" : "notchecked";
-                                    <li><input type="checkbox" id="@index" data-target="@friend.Id" @check><label for="@index">@friend.Email</label></li>
-                                }
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
+        @Html.Partial("~/Views/Shared/_Task.cshtml", task);
     }
+
+    
 
 @section scripts {
     

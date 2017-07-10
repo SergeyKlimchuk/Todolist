@@ -9,9 +9,7 @@ namespace ToDoListApplication.Models
 {
     public class UserFriend
     {
-        [Key, Column(Order = 1)]
         public string FirstUser { get; set; }
-        [Key, Column(Order = 2)]
         public string SecondUser { get; set; }
     }
 }

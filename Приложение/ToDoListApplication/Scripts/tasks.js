@@ -46,7 +46,7 @@ function ClearAddFrom() {
     $($title).val("");
     $($text).val("");
     for (var i = 0; i < $labels.length; i++) { $labels[i].checked = false; }
-    for (var i = 0; i < $users.length; i++) { $users[i].checked = false; }
+    for (var d = 0; d < $users.length; d++) { $users[d].checked = false; }
     // Очищаем линию ярлыков
     $('.fromAdd').find('.task-tags-menu').empty();
     // Очищаем линию пользователей
@@ -66,8 +66,8 @@ function DeleteTask(event) {
 
     // Отправляем AJAX-запрос
     $.ajax({
-        url: "/Home/DeleteTask",
-        type: "GET",
+        url: "/Home/AjaxDeleteTask",
+        type: "POST",
         data: "taskId=" + $taskId
     })
 
@@ -87,7 +87,7 @@ function SetLabelsLineById(id) {
         var $labelText = $($LiList[item]).find('label').text();
         //console.log($checkBox);
 
-        if ($checkBox.checked) {
+        if ($($checkBox).checked) {
             $($tagsLine).append($("<span class='label-segment pull-right'>" + $labelText + "</span>"));
         }
     }
@@ -137,9 +137,9 @@ function LabelEdit(event) {
 
     // Отправляем AJAX-запрос
     $.ajax({
-        url: "/Home/EditLabel",
-        type: "GET",
-        data: "taskId=" + $taskId + "&labelId=" + $labelId + "&actionId=" + $labelStatus,
+        url: "/Home/AjaxSetTaskLabel",
+        type: "POST",
+        data: "taskId=" + $taskId + "&labelId=" + $labelId + "&isAddAction=" + $labelStatus,
         success: function (response) { }
     });
 
@@ -167,9 +167,9 @@ function UserEdit(event) {
 
     // Отправляем AJAX-запрос
     $.ajax({
-        url: "/Home/EditTaskUser",
-        type: "GET",
-        data: "taskId=" + $taskId + "&userId=" + $userId + "&actionId=" + $userStatus,
+        url: "/Home/AjaxSetTaskUser",
+        type: "POST",
+        data: "taskId=" + $taskId + "&userId=" + $userId + "&isAddAction=" + $userStatus,
         success: function (response) { }
     });
 
@@ -187,8 +187,8 @@ function TaskTextEdit(event) {
 
     // Отправляем AJAX-запрос
     $.ajax({
-        url: "/Home/EditTaskText",
-        type: "GET",
+        url: "/Home/AjaxSetTaskText",
+        type: "POST",
         data: "taskId=" + $taskId + "&text=" + $text,
         success: function (response) { }
     })
@@ -206,9 +206,9 @@ function TaskTitleEdit(event) {
 
     // Отправляем AJAX-запрос
     $.ajax({
-        url: "/Home/EditTitleText",
-        type: "GET",
-        data: "taskId=" + $taskId + "&title=" + $text,
+        url: "/Home/AjaxSetTaskTitle",
+        type: "POST",
+        data: "taskId=" + $taskId + "&text=" + $text,
         success: function (response) { }
     })
 
@@ -286,22 +286,22 @@ $('#addBtn').on('click', function () {
     }
 
     usersList = [];
-    for (var i = 0; i < $usersCheckbox.length; i++) {
+    for (var d = 0; d < $usersCheckbox.length; d++) {
         $userCheckbox = $usersCheckbox[i];
         if ($userCheckbox.checked) {
             userId = $userCheckbox.id.replace('Friend_', '');
 
             usersList.push({
-                FriendId: userId
+                Id: userId
             });
         }
     }
-    console.log({ Text: $text, Title: $title, LabelModel: labelsList, Friend: usersList });
+    //console.log({ Text: $text, Title: $title, Labels: labelsList, Users: usersList });
     // Отправляем AJAX-запрос
     $.ajax({
-        url: "/Home/AddTaskAndGetView",
+        url: "/Home/AjaxAddTask",
         type: "POST",
-        data: { Text: $text, Title: $title, LabelModel: labelsList, Friend: usersList },
+        data: { Text: $text, Title: $title, Labels: labelsList, Users: usersList },
         success: AddNewTask
     })
     

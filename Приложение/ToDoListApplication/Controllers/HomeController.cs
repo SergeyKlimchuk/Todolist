@@ -16,164 +16,177 @@ namespace ToDoListApplication.Controllers
         const int PAGE_COUNT = 10;
 
         // Контекст данных
-        DataContext dataContext = new DataContext();
-        
+        ApplicationDbContext dataContext = new ApplicationDbContext();
+
         #region AJAX - запросы
-
-        public ActionResult EditTaskUser(int taskId, string userId, string actionId)
+        
+        /// <summary>
+        /// Устанавливает принятый заголовок к заданию по идентификатору.
+        /// </summary>
+        /// <param name="taskId">Идентификатор задания.</param>
+        /// <param name="text">Текст заголовка.</param>
+        /// <returns>Возвращает пустой ответ.</returns>
+        [HttpPost]
+        public ActionResult AjaxSetTaskTitle(int taskId, string text)
         {
-            try
-            {
-                // Ищем запись
-                TaskModel task = dataContext.Tasks.Include(t => t.UsersIds).Single(t => t.Id == taskId);
-                // Пользователь который должен быть удален из задачи
-                UserId user = null;
-                if (actionId == "true")
-                {
-                    UserId userIdModel = new UserId() { Value = userId };
-                    task.UsersIds.Add(userIdModel);
-                }
-                else
-                {
-                    user = task.UsersIds.Single(u => u.Value == userId);
-                    // Удаляем сегмент
-                    task.UsersIds.Remove(user);
-                }
-                
-                // Сохраняем действия
-                dataContext.SaveChanges();
-            }
-            catch
-            {
-                throw new Exception("Ошибка вычисления, возможно запись не была найдена!");
-            }
-
-            // Возвращаем пустой ответ
+            dataContext.Tasks
+                .Single(t => t.Id == taskId)
+                .Title = text;
+            
+            dataContext.SaveChanges();
             return new EmptyResult();
         }
-
-        public ActionResult EditLabel(int taskId, int labelId, string actionId)
+        /// <summary>
+        /// Устанавливает принятый текст к заданию по идентификатору.
+        /// </summary>
+        /// <param name="taskId">Идентификатор задания.</param>
+        /// <param name="text">Текст задания.</param>
+        /// <returns>Возвращает пустой ответ.</returns>
+        [HttpPost]
+        public ActionResult AjaxSetTaskText(int taskId, string text)
         {
-            // Ищем запись
-            TaskModel task = dataContext.Tasks.Include(t => t.LabelModel).Where(t => t.Id == taskId).ToList()[0];
-            // Ищем ярлык
-            LabelModel label = dataContext.Labels.Where(l => l.Id == labelId).ToList()[0];
-            // Содержится ли ярлык в записи
-            bool contain = task.LabelModel.Contains(label);
+            dataContext.Tasks
+                .Single(t => t.Id == taskId)
+                .Text = text;
 
-            if (Convert.ToBoolean(actionId))
+            dataContext.SaveChanges();
+            return new EmptyResult();
+        }
+        /// <summary>
+        /// Добавляет или Удаляет пользователя из задания.
+        /// </summary>
+        /// <param name="taskId">Идентификатор задания.</param>
+        /// <param name="userId">Идентификатор пользователя</param>
+        /// <param name="isAddAction">
+        /// Переменная отвечает за действие которое будет выполнятся. При "True" будет добавление пользователя, иначе удаление из задания.
+        /// </param>
+        /// <returns>Возвращает пустой ответ.</returns>
+        [HttpPost]
+        public ActionResult AjaxSetTaskUser(int taskId, string userId, bool isAddAction)
+        {
+            TaskModel currentTask = dataContext.Tasks
+                .Single(t => t.Id == taskId);
+
+            ApplicationUser user = dataContext.Users.Single(u => u.Id == userId);
+            
+            if (isAddAction)
             {
-                if (!contain)
-                {
-                    task.LabelModel.Add(label);
-                }
+                currentTask.Users.Add(user);
             }
             else
             {
-                if (contain)
-                {
-                    task.LabelModel.Remove(label);
-                }
+                currentTask.Users.Remove(user);
             }
+            
             dataContext.SaveChanges();
-
-            //throw new Exception();
-
-            // Возвращаем пустой ответ
             return new EmptyResult();
         }
-
-        public ActionResult EditTaskText(int taskId, string text)
-        {
-            var currentTask = dataContext.Tasks.Where(t => t.Id == taskId);
-
-            if (currentTask == null) return null;
-
-            currentTask.ToList()[0].Text = text;
-            dataContext.SaveChanges();
-
-            return new EmptyResult();
-        }
-
-        public ActionResult EditTitleText(int taskId, string title)
-        {
-            var currentTask = dataContext.Tasks.Where(t => t.Id == taskId);
-
-            if (currentTask == null) return null;
-
-            currentTask.ToList()[0].Title = title;
-            dataContext.SaveChanges();
-
-            return new EmptyResult();
-        }
-
-        public ActionResult DeleteTask(int taskId)
-        {
-            // Находим нужную запись
-            TaskModel task = dataContext.Tasks.Single(t => t.Id == taskId);
-            // Удаляем запись
-            dataContext.Tasks.Remove(task);
-            // Охраняем изменения
-            dataContext.SaveChanges();
-            // Возвращаем пустой результат
-            return new EmptyResult();
-        }
-
+        /// <summary>
+        /// Добавляет или удаляет ярлык из задания.
+        /// </summary>
+        /// <param name="taskId">Идентификатор задания.</param>
+        /// <param name="labelId">Идентификатор ярлыка.</param>
+        /// <param name="IsAddAction">
+        /// Переменная отвечает за действие которое будет выполнятся. При "True" будет добавление ярлыка, иначе удаление из задания.
+        /// </param>
+        /// <returns>Возвращает пустой ответ.</returns>
         [HttpPost]
-        public ActionResult AddTaskAndGetView(TaskModel task)
+        public ActionResult AjaxSetTaskLabel(int taskId, int labelId, bool isAddAction)
         {
-            // Получаем все ярлыки пользователя
-            List<LabelModel> labelsList = dataContext.GetLabelsListByUserId(User.Identity.GetUserId());
-            // Получаем идентификаторы ярлыков которые нужно встроить в запись
-            List<int> labelsId = task.LabelModel.Select(l => l.Id).ToList();
-            // Находим нужные нам ярлыки
-            List<LabelModel> Goodlabels = labelsList.Where(l => labelsId.Contains(l.Id)).ToList();
-            
-            // Получаем все идентификаторы пользователей задания
-            List<string> usersIdList = task.UsersIds.Select(f => f.Value).ToList();
-            // Находим данные пользователей
-            var userIdModels = dataContext.UsersIds.Where(u => usersIdList.Contains(u.Value));
-            
-            // Создание задания
-            TaskModel fullTask = new TaskModel()
+            TaskModel currentTask = dataContext.Tasks
+                .Single(t => t.Id == taskId);
+
+            LabelModel label = dataContext.Labels.Single(u => u.Id == labelId);
+
+            if (isAddAction)
             {
-                AlarmTime = DateTime.Now,
-                LabelModel = Goodlabels,
-                AuthorId = User.Identity.GetUserId(),
-                UsersIds = userIdModels.ToList(),
-                Title = task.Title,
-                Text = task.Text
-            };
+                currentTask.Labels.Add(label);
+            }
+            else
+            {
+                currentTask.Labels.Remove(label);
+            }
+
+            dataContext.SaveChanges();
+            return new EmptyResult();
+        }
+        /// <summary>
+        /// Добавление задания.
+        /// </summary>
+        /// <param name="task">Задание которое нужно добавить.</param>
+        /// <returns>Возвращает пустой ответ.</returns>
+        [HttpPost]
+        public ActionResult AjaxAddTask(TaskModel task)
+        {
+            // Производим вставку ярлыков по переданным идентификаторам
+            if (task.Labels != null)
+            {
+                IEnumerable<int> labelsIds = task.Labels.Select(l => l.Id);
+                task.Labels = dataContext.Labels.Where(l => labelsIds.Contains(l.Id)).ToList();
+            }
             
-            dataContext.Tasks.Add(fullTask);
+            // Производим вставку пользователей по переданным идентификаторам
+            if (task.Users != null)
+            {
+                IEnumerable<string> usersIds = task.Users.Select(u => u.Id);
+                task.Users = dataContext.Users.Where(u => usersIds.Contains(u.Id)).ToList();
+            }
+
+            task.AlarmTime = DateTime.Now;
+
+            string userId = User.Identity.GetUserId();
+            ApplicationUser user = dataContext.Users.Single(u => u.Id == userId);
+            task.Author = user;
+
+            user.Tasks.Add(task);
             dataContext.SaveChanges();
 
-            // Получаем идентификатор задания
-            int id = fullTask.Id;
+            // Отображение
+            PartialViewResult result = GetRenderedTask(task.Id);
 
-            // Генерируем html сегмент задания
-            PartialViewResult partialView = GetRenderedTask(id);
-
-            // Возвращаем html сегмент
-            return partialView;
+            return result;
         }
+        /// <summary>
+        /// Удаление задания.
+        /// </summary>
+        /// <param name="taskId">Идентификатор задания.</param>
+        /// <returns>Возвращает пустой ответ.</returns>
+        [HttpPost]
+        public ActionResult AjaxDeleteTask(int taskId)
+        {
+            var tasks = dataContext.Tasks.ToList();
 
+            TaskModel task = dataContext.Tasks.Include(x => x.Author).Single(t => t.Id == taskId);
+            dataContext.Tasks.Remove(task);
+            dataContext.SaveChanges();
+            return new EmptyResult();
+        }
+        /// <summary>
+        /// Генерирует HTML-сегмент задания по его идентификатору
+        /// </summary>
+        /// <param name="id">Идентификатор задания.</param>
+        /// <returns>HTML-сегмент.</returns>
         public PartialViewResult GetRenderedTask(int id)
         {
             // Находим модель по id
             TaskModel task = dataContext.Tasks.Single(t => t.Id == id);
 
-            // Добавляем вторичные данные
-            ViewBag.LabelsList = dataContext.GetLabelsListByUserId(User.Identity.GetUserId());
-            ViewBag.FriendsList = dataContext.GetUserFriendsByUserId(User.Identity.GetUserId());
+            string userId = User.Identity.GetUserId();
 
+            List<LabelModel> labels = dataContext.Labels.Where(x => x.Author.Id == userId).ToList();
+            List<ApplicationUser> friends = dataContext.Users.Single(x => x.Id == userId).Friends.ToList();
+
+            // Добавляем вторичные данные
+            ViewBag.LabelsList = labels;
+            ViewBag.FriendsList = friends;
+            
             // Генерируем частичное представление
             PartialViewResult partialView = PartialView("~/Views/Shared/_Task.cshtml", task);
             
             // Возвращаем представление
             return partialView;
         }
-
+        
         #endregion
 
         #region Обработчики страниц
@@ -181,46 +194,37 @@ namespace ToDoListApplication.Controllers
         public ActionResult Index()
         {
             
-            
             return View();
         }
 
+        
         [HttpGet]
-        public ActionResult Tasks(int? page = null)
+        public ActionResult Tasks(int? page = 1)
         {
-            var userId = User.Identity.GetUserId();
+            string userId = User.Identity.GetUserId();
+            ApplicationUser user = dataContext.Users.Single(u => u.Id == userId);
+            List<TaskModel> tasks = user.Tasks.OrderByDescending(x => x.Id).ToList();
+            ViewBag.LabelsList = user.Labels;
+            ViewBag.FriendsList = user.Friends;
 
-            var tasksList = dataContext.GetUserTasksByUserId(userId);
+            int startInt = ((int)page - 1) * PAGE_COUNT;
+            int endInt = startInt + PAGE_COUNT;
+
+            // Защита //
+            if ((int)page < 1 || (startInt > tasks.Count - 1 && tasks.Count > 0)) 
+            {
+                return new HttpNotFoundResult($"Page '{page}', not found!");
+            }
+
+            if (endInt > tasks.Count - 1)
+            {
+                tasks = tasks.GetRange(startInt, tasks.Count - startInt);
+            }
+            else
+            {
+                tasks = tasks.GetRange(startInt, PAGE_COUNT);
+            }
             
-            // Перенаправление если не авторизован
-            if (!User.Identity.IsAuthenticated) Response.Redirect("/");
-            
-            // Проверка на пустой аргумент
-            if (page == null) page = 1;
-
-            // Декриментируем для упрощения алгоритма
-            page--;
-            
-            // Если страница меньше нуля выбивает ошибку.
-            if (page < 0) return new HttpNotFoundResult("Page not found! (Out of range <)");
-
-            // Вычисление промежуточных переменных
-            int pageStart = Convert.ToInt32(page) * PAGE_COUNT;
-            int pageStop = pageStart + PAGE_COUNT - 1;
-            int recordsCount = tasksList.Count();
-
-            // Проверка на выход
-            if (pageStart > recordsCount) return new HttpNotFoundResult("Page not found (Out of range >)!");
-            
-            // Если запрашиваемая страница будет отображена не полностью
-            int countTasks = pageStop > recordsCount ? recordsCount - pageStart : PAGE_COUNT;
-
-            // Задания на вывод
-            List<TaskModel> tasks = tasksList.ToList().GetRange(pageStart, countTasks);
-            // Форматирвоание листов
-            ViewBag.LabelsList = dataContext.GetLabelsListByUserId(User.Identity.GetUserId());
-            ViewBag.FriendsList = dataContext.GetUserFriendsByUserId(User.Identity.GetUserId());
-
             return View(tasks);
         }
 
@@ -228,69 +232,52 @@ namespace ToDoListApplication.Controllers
         
         #region Вспомогательные процедуры
 
+        
         // заполнить таблицу 
         private void AddToBase()
         {
-            string userId = User.Identity.GetUserId();
-            DataContext dataContext = new DataContext();
-            LabelModel label1 = new LabelModel { Name = "Дом", Color = System.Drawing.Color.Azure, AuthorId = userId };
-            LabelModel label2 = new LabelModel { Name = "Работа", Color = System.Drawing.Color.Purple, AuthorId = userId };
-            List<LabelModel> labels = new List<LabelModel> { label1, label2 };
-            dataContext.Labels.AddRange(labels);
+            string userId = dataContext.Users.Single(u => u.Email == "sd-2030@mail.ru").Id;
+            ApplicationUser user = dataContext.Users.Single(u => u.Id == userId);
+
+            // Друзья
+            ApplicationUser uim1 = dataContext.Users.Single(u => u.Email == "sergeyklim@live.ru");
+            ApplicationUser uim2 = dataContext.Users.Single(u => u.Email == "sergeyklim01@gmail.com");
+            user.Friends.Add(uim1);
+            user.Friends.Add(uim2);
             dataContext.SaveChanges();
 
-
-            ApplicationDbContext usersContext = new ApplicationDbContext();
-            ApplicationUser uim1 = usersContext.Users.Single(u => u.Email == "211572@mail.ru");
-            ApplicationUser uim2 = usersContext.Users.Single(u => u.Email == "sergeyklim01@gmail.com");
-
-
-            UserFriend userFriend1 = new UserFriend()
-            {
-                FirstUser = userId,
-                SecondUser = uim1.Id
-            };
-            UserFriend userFriend2 = new UserFriend()
-            {
-                FirstUser = userId,
-                SecondUser = uim2.Id
-            };
-
-            dataContext.Friends.AddRange(new List<UserFriend>() {
-                userFriend1,
-                userFriend2
-            });
-            dataContext.SaveChanges();
-
-
-            UserId userId1 = new UserId() { Value = uim1.Id };
-            UserId userId2 = new UserId() { Value = uim2.Id };
+            // Ярлыки
+            LabelModel label1 = new LabelModel { Text = "Дом", Color = "#E00" };
+            LabelModel label2 = new LabelModel { Text = "Работа", Color = "#F0F" };
+            
+            // Задания
             TaskModel task1 = new TaskModel
             {
                 Title = "Хлебушек",
                 Text = "Купить хлебушка, вспомнить что сам хлебушек",
-                LabelModel = new List<LabelModel> { label1, label2 },
-                AuthorId = userId,
-                UsersIds = new List<UserId> { userId1, userId2 }
+                Labels = new List<LabelModel> { label2, label1 },
+                Users = null,
+                Author = user,
+                AlarmTime = DateTime.Now
             };
-            task1.AlarmTime = DateTime.Now;
             TaskModel task2 = new TaskModel
             {
                 Title = "Отчет",
                 Text = "Сдать отчет г. директору предприятия 'ЦЕСНА'",
-                LabelModel = new List<LabelModel> { label1 },
-                AuthorId = userId,
-                UsersIds = new List<UserId> { userId2 }
+                Labels = new List<LabelModel> { label2, label1 },
+                Users = null,
+                Author = user,
+                AlarmTime = DateTime.Now
             };
-            task2.AlarmTime = DateTime.Now;
-            dataContext.Tasks.AddRange(new List<TaskModel> { task1, task2 });
+            user.Tasks.Add(task1);
+            user.Tasks.Add(task2);
+            user.Labels.Add(label1);
+            user.Labels.Add(label2);
             dataContext.SaveChanges();
         }
+        
 
         #endregion
     }
-
-
-    
     
 }

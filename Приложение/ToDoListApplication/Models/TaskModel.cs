@@ -4,44 +4,38 @@ using System.Collections.Generic;
 namespace ToDoListApplication.Models
 {
     /// <summary>
-    /// Модель задания
+    /// Модель задания.
     /// </summary>
     public class TaskModel
     {
         /// <summary>
-        /// Идентификатор
+        /// Идентификатор.
         /// </summary>
         public int Id { get; set; }
         /// <summary>
-        /// Заголовок
+        /// Заголовок.
         /// </summary>
         public string Title { get; set; }
         /// <summary>
-        /// Текст
+        /// Текст.
         /// </summary>
         public string Text { get; set; }
         /// <summary>
-        /// Время оповещения
+        /// Время оповещения.
         /// </summary>
         public DateTime AlarmTime { get; set; }
         /// <summary>
-        /// Идентификатор автора задания
+        /// Идентификатор автора задания.
         /// </summary>
-        public string AuthorId { get; set; }
+        public ApplicationUser Author { get; set; }
         /// <summary>
-        /// Идентификаторы привязанных ярлыков
+        /// Идентификаторы привязанных ярлыков.
         /// </summary>
-        public ICollection<LabelModel> LabelModel { get; set; }
+        public virtual ICollection<LabelModel> Labels { get; set; }
         /// <summary>
-        /// Идентификаторы привязанных пользователей
+        /// Идентификаторы привязанных пользователей.
         /// </summary>
-        public ICollection<UserId> UsersIds { get; set; }
-
-        public TaskModel()
-        {
-            LabelModel = new List<LabelModel>();
-            UsersIds = new List<UserId>();
-        }
+        public virtual ICollection<ApplicationUser> Users { get; set; }
         
     }
 }
