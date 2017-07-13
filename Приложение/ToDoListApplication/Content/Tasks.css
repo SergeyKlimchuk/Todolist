@@ -176,7 +176,7 @@ body {
     cursor: pointer;
 }
 
-ul[name=UsersList] {
+ul[name=UsersList], ul.users-menu {
     min-width: 220px;
     padding-bottom: 0;
 }
