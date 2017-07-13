@@ -3,7 +3,7 @@
 }
 
 body {
-    background-color: #FAFBFC;
+    background-image: url('Icons/Background.png');
 }
 
 .body-content > .row{

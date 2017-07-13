@@ -1,6 +1,7 @@
 ﻿body {
     padding-top: 50px;
     padding-bottom: 20px;
+    background-image: url('Icons/Background.png');
 }
 
 /* Set padding to keep content from hitting the edges */
@@ -21,4 +22,16 @@ input,
 select,
 textarea {
     max-width: 280px;
+}
+
+#body-important-text {
+    margin-top: 120px;
+}
+
+#body-important-text a{
+    margin-top: 30px;
+}
+
+#body-important-text h1, #body-important-text h3 {
+    cursor: default;
 }

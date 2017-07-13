@@ -215,13 +215,16 @@
     <Content Include="Content\dropdowns-enhancement.css" />
     <Content Include="Content\Icons\Authors.png" />
     <Content Include="Content\Icons\Authors_plus.png" />
+    <Content Include="Content\Icons\Background.png" />
     <Content Include="Content\Icons\Clock.png" />
     <Content Include="Content\Icons\Clock_plus.png" />
+    <Content Include="Content\Icons\Computer.png" />
     <Content Include="Content\Icons\Label.png" />
     <Content Include="Content\Icons\Label_plus.png" />
     <Content Include="Content\Icons\Loop.png" />
     <Content Include="Content\Icons\Palette.png" />
     <Content Include="Content\Icons\Palette_plus.png" />
+    <Content Include="Content\Icons\Panels.png" />
     <Content Include="Content\Tasks.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />

@@ -247,7 +247,11 @@ namespace ToDoListApplication.Controllers
 
         public ActionResult Index()
         {
-            
+            if (User.Identity.IsAuthenticated)
+            {
+                return new RedirectResult("~/Home/Tasks");
+            }
+
             return View();
         }
 
