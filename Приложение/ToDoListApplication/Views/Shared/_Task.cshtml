@@ -34,7 +34,11 @@
                                 @foreach (LabelModel label in ViewBag.LabelsList)
                                 {
                                     string index = Model.Id + "_" + label.Id;
-                                    string check = Model.Labels.Contains(label) ? "checked" : "";
+                                    string check = "";
+                                    if (Model.Labels != null && Model.Labels.Contains(label))
+                                    {
+                                        check = "checked";
+                                    }
                                     <li>
                                         <input type="checkbox" id="@index" data-target="@label.Id" @check /><label for="@index">@label.Text</label>
                                     </li>
@@ -48,7 +52,11 @@
                                 @foreach (ApplicationUser friend in ViewBag.FriendsList)
                                 {
                                     string index = Model.Id + "_" + friend.Id;
-                                    string check = Model.Users.Contains(friend) ? "checked" : "";
+                                    string check = "";
+                                    if (Model.Users != null && Model.Users.Contains(friend))
+                                    {
+                                        check = "checked";
+                                    }
                                     <li>
                                         <input type="checkbox" id="@index" data-target="@friend.Id" @check><label for="@index">@friend.Email</label>
                                     </li>

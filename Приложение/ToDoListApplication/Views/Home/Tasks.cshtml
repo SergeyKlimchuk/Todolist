@@ -38,20 +38,22 @@
                     <div class="col-xs-12 task-tools-menu">
                         <div class="btn-group tool-tag-changer">
                             <span data-toggle="dropdown" class="glyphicon dropdown-toggle" data-placeholder="false"></span>
-                            <ul class="dropdown-menu labels-menu" name="LabelsList">
+                            <ul class="dropdown-menu labels-menu bullet" name="LabelsList">
                                 @foreach (LabelModel label in ViewBag.LabelsList)
                                 {
                                     <li><input type="checkbox" id="Label_@label.Id" /><label for="Label_@label.Id">@label.Text</label></li>
                                 }
+                                <li class="labelAddBtn text-center" data-toggle="modal" data-target=".label-modal">Добавить ярлык <b>+</b></li>
                             </ul>
                         </div>
                         <div class="btn-group tool-user-changer">
                             <span data-toggle="dropdown" class="glyphicon dropdown-toggle" data-placeholder="false"></span>
-                            <ul class="dropdown-menu" name="UsersList">
+                            <ul class="dropdown-menu bullet" name="UsersList">
                                 @foreach (ApplicationUser friend in ViewBag.FriendsList)
                                 {
                                     <li><input type="checkbox" id="Friend_@friend.Id" /><label for="Friend_@friend.Id">@friend.Email</label></li>
                                 }
+                                <li class="userAddBtn text-center" data-toggle="modal" data-target=".user-modal">Добавить пользователя <b>+</b></li>
                             </ul>
                         </div>
                         <div class="btn btn-xs btn-success pull-right" id="addBtn">Добавить</div>
@@ -65,7 +67,71 @@
         @Html.Partial("~/Views/Shared/_Task.cshtml", task);
     }
 
-    
+    <div class="modal fade label-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content labelAddForm">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Добавить ярлык</h4>
+                </div>
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <label class="control-label" for="label-add-color-change">Цвет:</label><br />
+                        <div class="btn-group btn-group-xs" data-toggle="buttons" id="label-add-color-change">
+                            <label class="btn btn-default active"><input type="radio" name="options" id="option1" autocomplete="off" checked>белый</label>
+                            <label class="btn btn-danger"><input type="radio" name="options" id="option2" autocomplete="off">красный</label>
+                            <label class="btn btn-warning"><input type="radio" name="options" id="option3" autocomplete="off">желтый</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label" for="label-add-name-change">Название:</label><br />
+                        <input type="text" class="form-control" placeholder="Введите название ярлыка" id="label-add-name-change" />
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                        <button type="button" class="btn btn-primary" id="label-add-accept" data-dismiss="modal">Создать</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно поиска и добавления пользователя -->
+    <div class="modal fade user-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content labelAddForm">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Добавить пользователя</h4>
+                </div>
+                <div class="modal-body">
+
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Логин или почта" aria-describedby="user-search" id="user-add-name-change">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="button" id="user-search-btn"><span class="glyphicon glyphicon-search"></span></button>
+                        </span>
+                    </div>
+                    <br />
+                    <div id="users-result-list">
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" id="user-add-close" data-dismiss="modal">Закрыть</button>
+                    <button type="button" class="btn btn-primary" id="user-add-accept" data-dismiss="modal">Добавить</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
 
 @section scripts {
     

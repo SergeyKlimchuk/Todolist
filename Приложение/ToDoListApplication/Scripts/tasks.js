@@ -4,7 +4,7 @@ function SetLabelsAddTask() {
     // Строка с тегами
     var $LabelsLine = $('.fromAdd').find('.task-tags-menu');
     // Массив 
-    var $LiList = $('.fromAdd').find('.labels-menu li');
+    var $LiList = $('.fromAdd').find('.labels-menu li').not('.labelAddBtn');
     // Очитса линии от предыдущих тегов
     $LabelsLine.empty();
 
@@ -30,7 +30,7 @@ function SetUsersAddTask() {
         var $checkBox = $($LiList[item]).find('input:checkbox')[0];
         var $userName = $($LiList[item]).find('label').text();
 
-        if ($checkBox.checked) {
+        if ($($checkBox).checked) {
             $($UsersLine).append($("<span class='label-segment pull-right'>" + $userName + "</span>"));
         }
     }
@@ -77,7 +77,7 @@ function DeleteTask(event) {
 function SetLabelsLineById(id) {
     var $element = $('.task-box#' + id);
     // Массив 
-    var $LiList = $($element).find('.labels-menu li');
+    var $LiList = $($element).find('.labels-menu li').not('.labelAddBtn');
     // Строка с тегами
     var $tagsLine = $($element).find('.task-tags-menu');
     $tagsLine.empty();
@@ -85,9 +85,9 @@ function SetLabelsLineById(id) {
     for (var item = 0; item < $LiList.length; item++) {
         var $checkBox = $($LiList[item]).find('input:checkbox')[0];
         var $labelText = $($LiList[item]).find('label').text();
-        //console.log($checkBox);
+        //console.log($checkBox.checked);
 
-        if ($($checkBox).checked) {
+        if ($checkBox.checked) {
             $($tagsLine).append($("<span class='label-segment pull-right'>" + $labelText + "</span>"));
         }
     }
@@ -131,7 +131,7 @@ function LabelEdit(event) {
     // Берем ид ярлыка
     $labelId = $checkbox.attr('data-target');
     // Берем статус
-    $labelStatus = !$checkbox[0].checked;
+    $labelStatus = !($checkbox[0].checked);
     // Меняем значение checkbox'а
     $checkbox[0].checked = $labelStatus;
 
@@ -144,7 +144,7 @@ function LabelEdit(event) {
     });
 
     // Отладка
-    //console.log("taskId: " + $taskId + ", LabelId: " + $labelId + ", status: " + $labelStatus); // отладка
+    console.log("taskId: " + $taskId + ", LabelId: " + $labelId + ", status: " + $labelStatus); // отладка
     SetLabelsLineById($taskId);
     return false;
 }
@@ -272,7 +272,7 @@ $('#addBtn').on('click', function () {
     $text = $($("textarea[name='TaskText']")[0]).val();
     $labelsCheckbox = $("ul[name='LabelsList'] input[type='checkbox']");
     $usersCheckbox = $("ul[name='UsersList'] input[type='checkbox']");
-
+    
     labelsList = [];
     for (var i = 0; i < $labelsCheckbox.length; i++) {
         $labelCheckbox = $labelsCheckbox[i];
@@ -322,9 +322,9 @@ function AddNewTask(response) {
     // Добавляем возможность удаления
     $task.find('.btn-exit.editer').on('click', DeleteTask);
     // Добавляем возможность редактирования ярлыков
-    $task.find('.dropdown-menu.labels-menu.editer li').on('click', LabelEdit);
+    $task.find('.dropdown-menu.labels-menu.editer li').not('.labelAddBtn').on('click', LabelEdit);
     // Добавляем возможность редактирования пользователей
-    $task.find('.dropdown-menu.users-menu.editer li').on('click', UserEdit);
+    $task.find('.dropdown-menu.users-menu.editer li').not('.userAddBtn').on('click', UserEdit);
     // Добавляем возможность изменить заголовок
     $task.find('.task-title.editer input').on('blur', TaskTitleEdit);
     // Добавляем возможность изменить текст
@@ -344,3 +344,95 @@ $('.task-delete').not('.editer').on('click', ClearAddFrom);
 $('.task-tools-menu').not('.editer').find('li').on('click', SetLabelsAddTask);
 // Показ пользователей которые выбраны
 $('.tool-user-changer').not('.editer').find('li').on('click', SetUsersAddTask);
+
+$('#label-add-accept').on('click', function (event) {
+
+    var $object = $(event.currentTarget).parents('.labelAddForm');
+    // Очистка
+    var $LabelsList = $($object).find('#label-add-color-change').first();
+    var $chackedLabel = $($LabelsList).find('input:checked').parent('label');
+    var $firstLabel = $($LabelsList).find('label').first();
+
+    $($chackedLabel).removeClass('active');
+    $($chackedLabel).find('input').checked = false;
+    $($firstLabel).addClass('active');
+    $($firstLabel).find('input').checked = true;
+
+    //console.log($firstLabel);
+    color = $($chackedLabel).text();
+    text = $($object).find('#label-add-name-change').val();
+    $($object).find('#label-add-name-change').val('');
+
+    $.ajax({
+        url: "/Home/AddLabel",
+        type: "POST",
+        data: { Color: color, Text: text },
+        success: function (result) {
+            component = $('<li><input type="checkbox" id="Label_' + result + '" /><label for="Label_' + result + '">' + text + '</label></li>');
+            $('.labels-menu .labelAddBtn').before(component);
+            //console.log(component);
+            $(component).on('click', SetLabelsAddTask);
+        }
+    });
+    
+});
+
+$('#user-search-btn').on('click', function (event) {
+    var $input = $(event.currentTarget).parent().siblings('#user-add-name-change');
+    text = $($input).val();
+    console.log("start search with: text='" + text + "'");
+
+
+    $.ajax({
+        url: "/Home/SearchUserByNameOrEmail",
+        type: "POST",
+        data: "pattern="+text,
+        success: function (result) {
+            console.log($(result));
+            var $resultSegment = $($input).parent().siblings('#users-result-list');
+            $resultSegment.empty();
+            $resultSegment.append($(result));
+
+
+            $('#users-result-list button').on('click', function (event) {
+                var $element = $(event.currentTarget);
+                $element.siblings('button').removeClass('active');
+                $element.toggleClass('active');
+
+            });
+
+
+        }
+    });
+    
+});
+
+$('#user-add-close').on('click', function (event) {
+    var $form = $(event.currentTarget).parents('.labelAddForm');
+    $form.find('#users-result-list').empty();
+    $form.find('#user-add-name-change').val('');
+});
+
+$('#user-add-accept').on('click', function (event) {
+    var $form = $(event.currentTarget).parents('.labelAddForm');
+    var $usersList = $form.find('#users-result-list');
+    userId = $usersList.find('button.active').attr('id').substring(10);
+
+    $.ajax({
+        url: "/Home/AddFriend",
+        type: "POST",
+        data: "userId=" + userId,
+        success: function (result) {
+            //var $segment = $('<li><input type="checkbox" id="@index" data-target="@friend.Id" @check><label for="@index">@friend.Email</label></li>');
+
+            //<li><input type="checkbox" id="@index" data-target="@friend.Id" @check><label for="@index">@friend.Email</label></li>
+
+
+
+
+            $form.find('#users-result-list').empty();
+            $form.find('#user-add-name-change').val('');
+        }
+    });
+    
+});

@@ -5,10 +5,10 @@
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * ======================================================================== */
 
-(function($) {
+(function ($) {
     "use strict";
 
-    var toggle   = '[data-toggle="dropdown"]',
+    var toggle = '[data-toggle="dropdown"]',
         disabled = '.disabled, :disabled',
         backdrop = '.dropdown-backdrop',
         menuClass = 'dropdown-menu',
@@ -26,7 +26,7 @@
 
     var proto = Dropdown.prototype;
 
-    proto.toggle = function(event) {
+    proto.toggle = function (event) {
         var $element = $(this);
 
         if ($element.is(disabled)) return;
@@ -85,9 +85,9 @@
 
         var index = $items.index($items.filter(':focus'));
 
-        if (e.keyCode == 38 && index > 0)                 index--;                        // up
+        if (e.keyCode == 38 && index > 0) index--;                        // up
         if (e.keyCode == 40 && index < $items.length - 1) index++;                        // down
-        if (!~index)                                      index = 0;
+        if (!~index) index = 0;
 
         $items.eq(index).trigger('focus')
     };
@@ -233,7 +233,7 @@
 
     $.fn.dropdown.Constructor = Dropdown;
 
-    $.fn.dropdown.clearMenus = function(e) {
+    $.fn.dropdown.clearMenus = function (e) {
         $(backdrop).remove();
         $('.' + openClass + ' ' + toggle).each(function () {
             var $parent = getParent($(this));

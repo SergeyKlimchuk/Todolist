@@ -186,7 +186,55 @@ namespace ToDoListApplication.Controllers
             // Возвращаем представление
             return partialView;
         }
-        
+        /// <summary>
+        /// Добавление ярлыка.
+        /// </summary>
+        /// <param name="label">Ярлык который нужно добавить.</param>
+        /// <returns>Возвращает пустой ответ.</returns>
+        [HttpPost]
+        public ActionResult AddLabel(LabelModel label)
+        {
+            string userId = User.Identity.GetUserId();
+            dataContext.Users.Single(u => u.Id == userId).Labels.Add(label);
+            dataContext.SaveChanges();
+            Response.Write(label.Id);
+
+            return new EmptyResult();
+        }
+        /// <summary>
+        /// Добавление ярлыка.
+        /// </summary>
+        /// <param name="pattern">Сегмент по которому будет произведен поиск.</param>
+        /// <returns>Возвращает пустой ответ.</returns>
+        [HttpPost]
+        public PartialViewResult SearchUserByNameOrEmail(string pattern)
+        {
+            List<ApplicationUser> users = dataContext.Users.Where(u => u.Id.Contains(pattern) || u.Email.Contains(pattern)).ToList();
+            PartialViewResult viewResult = PartialView("~/Views/Shared/_ListOfFoundUsers.cshtml", users);
+
+            return viewResult;
+        }
+        /// <summary>
+        /// Добавить друга по идентификатору.
+        /// </summary>
+        /// <param name="userId">идентификатор пользователя которого нужно добавить.</param>
+        /// <returns>Возвращает пустой ответ.</returns>
+        [HttpPost]
+        public ActionResult AddFriend(string userId)
+        {
+            ApplicationUser user = dataContext.Users.Single(u => u.Id == userId);
+            string currentUserId = User.Identity.GetUserId();
+            ApplicationUser currentUser = dataContext.Users.Single(u => u.Id == currentUserId);
+            
+            if (!currentUser.Friends.Contains(user))
+            {
+                currentUser.Friends.Add(user);
+                dataContext.SaveChanges();
+            }
+            
+            return new EmptyResult();
+        }
+
         #endregion
 
         #region Обработчики страниц

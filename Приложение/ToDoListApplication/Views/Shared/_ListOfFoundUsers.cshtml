@@ -1,0 +1,18 @@
+﻿@using ToDoListApplication.Models
+
+@model List<ApplicationUser>
+
+<div class="list-group">
+    @if (Model == null)
+    {
+        <button type="button" class="list-group-item disabled">Не найдено пользователей!</button>
+    }
+    else
+    {
+        foreach (ApplicationUser user in Model)
+        {
+            <button type="button" class="list-group-item" id="FoundUser_@user.Id">@user.Email</button>
+        }
+    }
+</div>
+
