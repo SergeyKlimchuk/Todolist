@@ -268,7 +268,11 @@ $('#addBtn').on('click', function () {
     $text = $($("textarea[name='TaskText']")[0]).val();
     $labelsCheckbox = $("ul[name='LabelsList'] input[type='checkbox']");
     $usersCheckbox = $("ul[name='UsersList'] input[type='checkbox']");
-    
+
+    if ($title.trim() == "" && $text.trim() == "") {
+        return false;
+    }
+
     labelsList = [];
     for (var i = 0; i < $labelsCheckbox.length; i++) {
         $labelCheckbox = $labelsCheckbox[i];
@@ -366,9 +370,10 @@ function AddNewUserToLists(response) {
         } else {
             $segment.on('click', UserEdit);
         }
-
-        
     }
+
+    $form.find('#users-result-list').empty();
+    $form.find('#user-add-name-change').val('');
 }
 
 function AddNewLabelToList(response) {
@@ -416,16 +421,16 @@ function AddNewLabelToList(response) {
         }
     }
 
+    // Очистка
+    $('#label-add-color-change label.active checkbox').checked = false;
+    $('#label-add-color-change label.active').removeClass('active');
+
+    $('#label-add-color-change label').first().checked = true;
+    $('#label-add-color-change label').first().addClass('active');
+
+    text = $('#label-add-name-change').val('');
+
     return null;
-    
-
-    // Очистка (реализовать)
-
-    $($object).find('#label-add-name-change').val('');
-    $($chackedLabel).removeClass('active');
-    $($chackedLabel).find('input').checked = false;
-    $($firstLabel).addClass('active');
-    $($firstLabel).find('input').checked = true;
 }
 
 // Очистка добавляющей формы
@@ -456,6 +461,9 @@ $('#label-add-accept').on('click', function (event) {
 $('#user-search-btn').on('click', function (event) {
     var $input = $(event.currentTarget).parent().siblings('#user-add-name-change');
     text = $($input).val();
+    if (text.length < 3) {
+        return null;
+    }
     //console.log("start search with: text='" + text + "'");
     
     $.ajax({
@@ -466,6 +474,9 @@ $('#user-search-btn').on('click', function (event) {
             //console.log($(result));
             var $resultSegment = $($input).parent().siblings('#users-result-list');
             $resultSegment.empty();
+            $resultSegment.append($('<hr />'));
+            $resultSegment.append($('<h4 class="text-center"><b>resultat:</b></h4>'));
+
             $resultSegment.append($(result));
 
             // Нажатие на кнопки которые были получены от сервера
@@ -480,6 +491,22 @@ $('#user-search-btn').on('click', function (event) {
     
 });
 
+$('#user-add-name-change').keyup(function (event) {
+    textLength = $(event.currentTarget).val().length;
+    var $alertPanel = $(event.currentTarget).parents('.modal-body').find('#user-alert');
+    
+    if (textLength > 2) {
+        if ($alertPanel.is(':visible')) {
+            $alertPanel.hide();
+        }
+    } else {
+        if (!$alertPanel.is(':visible')) {
+            $alertPanel.show();
+        }
+    }
+
+});
+
 $('#user-add-close').on('click', function (event) {
     var $form = $(event.currentTarget).parents('.userAddForm');
     $form.find('#users-result-list').empty();
@@ -487,11 +514,16 @@ $('#user-add-close').on('click', function (event) {
 });
 
 $('#user-add-accept').on('click', function (event) {
+    var $hasSelected = $('#users-result-list button.active');
+    if ($hasSelected.length == 0) {
+        return null;
+    }
+
     var $form = $(event.currentTarget).parents('.userAddForm');
     var $usersList = $form.find('#users-result-list');
     email = $usersList.find('button.active').val();
     userId = $usersList.find('button.active').attr('id').substring(10);
-
+    
     $.ajax({
         url: "/Home/AddFriend",
         type: "POST",
