@@ -250,6 +250,22 @@ namespace ToDoListApplication.Controllers
 
             return new EmptyResult();
         }
+        /// <summary>
+        /// Устанавливает принятый статус к заданию по идентификатору.
+        /// </summary>
+        /// <param name="taskId">Идентификатор задания.</param>
+        /// <param name="status">Статус задания.</param>
+        /// <returns>Возвращает пустой ответ.</returns>
+        [HttpPost]
+        public ActionResult AjaxSetStatus(int taskId, string status)
+        {
+            dataContext.Tasks
+                .Single(t => t.Id == taskId)
+                .Status = status == "true";
+
+            dataContext.SaveChanges();
+            return new EmptyResult();
+        }
 
         #endregion
 
@@ -299,7 +315,6 @@ namespace ToDoListApplication.Controllers
                     return new RedirectResult("~/");
                 }
             }
-
             
             List<TaskModel> tasks = user.Tasks.OrderByDescending(x => x.Id).ToList();
             ViewBag.LabelsList = user.Labels;

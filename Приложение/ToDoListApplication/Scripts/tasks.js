@@ -224,6 +224,29 @@ function TextAreaResize() {
     }, 0);
 }
 
+function StatusEdit(event) {
+    var button = $(event.currentTarget);
+    var status = !button.hasClass('glyphicon-ok');
+    var taskId = $(event.currentTarget).parents('.task-box').attr('id');
+
+    if (button.hasClass('glyphicon-ok')) {
+        button.removeClass('glyphicon-ok');
+        button.addClass('glyphicon-remove');
+    } else {
+        button.removeClass('glyphicon-remove');
+        button.addClass('glyphicon-ok');
+    }
+
+    console.log(taskId);
+
+    $.ajax({
+        url: "/Home/AjaxSetStatus",
+        type: "POST",
+        data: "taskId=" + taskId + "&status=" + status,
+        success: function (response) { }
+    });
+}
+
 // Отправка изменений в заголовке задачи
 $('.task-title.editer input').on('blur', TaskTitleEdit);
 // Удаление записи
@@ -319,6 +342,7 @@ function AddNewTask(response) {
     $task.find('.task-title.editer input').on('blur', TaskTitleEdit);
     // Добавляем возможность изменить текст
     $task.find('.task-text.editer').on('blur', TaskTextEdit);
+    $task.find('.task-status').on('click', StatusEdit);
 
     // Показ линий
     SetLines(taskId);
@@ -547,3 +571,5 @@ $('#label-add-name-change').keyup(function (event) {
         buttonAccept.removeClass('disabled');
     }
 });
+
+$('.task-status').click(StatusEdit);

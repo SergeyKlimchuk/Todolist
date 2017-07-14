@@ -4,7 +4,13 @@
 
             <div class="col-lg-6 col-lg-push-3 task-box" id="@Model.Id">
                 <div class="row">
-                    <div class="col-xs-11 task-title editer">
+                    @{
+                        string status = Model.Status ? "glyphicon-ok" : "glyphicon-remove";
+                        <div class="col-xs-1 task-status-div">
+                            <span class="glyphicon @status task-status"></span>
+                        </div>
+                    }
+                    <div class="col-xs-10 task-title editer">
                         <input type="text" name="@Model.Id" value="@Model.Title" />
                     </div>
                     <div class="col-xs-1 task-delete editer">

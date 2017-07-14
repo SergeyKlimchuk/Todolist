@@ -21,6 +21,10 @@ namespace ToDoListApplication.Models
         /// </summary>
         public string Text { get; set; }
         /// <summary>
+        /// Статус выполнения.
+        /// </summary>
+        public bool Status { get; set; }
+        /// <summary>
         /// Время оповещения.
         /// </summary>
         public DateTime AlarmTime { get; set; }

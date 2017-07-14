@@ -186,3 +186,17 @@ ul[name=UsersList], ul.users-menu {
     min-width: 220px;
     padding-bottom: 0;
 }
+
+.task-status-div {
+    margin-top: 10px;
+    color: #75CA84;
+}
+
+.task-status:hover {
+    color:white;
+    transition: .2s;
+}
+.task-status {
+    cursor: pointer;
+    transition: .2s;
+}
