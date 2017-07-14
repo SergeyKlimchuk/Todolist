@@ -213,14 +213,6 @@ function TaskTitleEdit(event) {
     return false;
 }
 
-// Отображение тени
-function ShowShadow() {
-    $(this).css('box-shadow', '0 0 10px black');
-}
-// Убираем тень
-function HideShadow() {
-    $(this).css('box-shadow', '');
-}
 // Гибгое изменение размера текстового поля
 function TextAreaResize() {
     var el = this;
@@ -243,11 +235,6 @@ $('.labels-menu.editer li').on('click', LabelEdit);
 // Отправка изменений пользователей задачи
 $('.users-menu.editer li').on('click', UserEdit);
 
-
-// Устанавливаем тень при входе в диапозон формы
-$('.task-box').on('mouseover', ShowShadow);
-// Убираем тень при выход из формы
-$('.task-box').on('mouseout', HideShadow);
 // Автоувеличение формы ввода текста (позаимствовал)
 $('textarea').on('keydown', TextAreaResize);
 
@@ -374,6 +361,9 @@ function AddNewUserToLists(response) {
 
     $form.find('#users-result-list').empty();
     $form.find('#user-add-name-change').val('');
+    $form.find('#user-alert').show();
+    $('#user-add-accept').removeClass('disabled');
+    $('#user-add-accept').addClass('disabled');
 }
 
 function AddNewLabelToList(response) {
@@ -481,10 +471,13 @@ $('#user-search-btn').on('click', function (event) {
 
             // Нажатие на кнопки которые были получены от сервера
             $('#users-result-list button').on('click', function (event) {
+                if ($(event.currentTarget).hasClass('active')) {
+                    return false;
+                }
                 var $element = $(event.currentTarget);
                 $element.siblings('button').removeClass('active');
                 $element.toggleClass('active');
-
+                $('#user-add-accept').removeClass('disabled');
             });
         }
     });
@@ -514,6 +507,10 @@ $('#user-add-close').on('click', function (event) {
 });
 
 $('#user-add-accept').on('click', function (event) {
+    if ($(event.currentTarget).hasClass('disabled')) {
+        return false;
+    }
+
     var $hasSelected = $('#users-result-list button.active');
     if ($hasSelected.length == 0) {
         return null;

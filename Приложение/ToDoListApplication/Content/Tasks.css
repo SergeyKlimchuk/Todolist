@@ -15,6 +15,12 @@ body {
     border-radius: 4px;
     border: 1px #21262A solid;
     margin-top: 20px;
+    transition: .2s;
+}
+
+.task-box:hover {
+    box-shadow: 0 0 10px black;
+    transition: .2s;
 }
 
 .task-title {

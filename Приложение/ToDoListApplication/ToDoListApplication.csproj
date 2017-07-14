@@ -206,6 +206,10 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\aspnet-ToDoListApplication-20170614114620.mdf" />
+    <Content Include="App_Data\aspnet-ToDoListApplication-20170614114620_log.ldf">
+      <DependentUpon>aspnet-ToDoListApplication-20170614114620.mdf</DependentUpon>
+    </Content>
     <Content Include="Content\bootstrap-select.css" />
     <Content Include="Content\bootstrap-select.min.css" />
     <Content Include="Content\bootstrap-theme.css" />
@@ -367,9 +371,7 @@
     <Content Include="Views\Shared\_Task.cshtml" />
     <Content Include="Views\Shared\_ListOfFoundUsers.cshtml" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="App_Data\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="packages.config" />
   </ItemGroup>
