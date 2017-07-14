@@ -1,11 +1,11 @@
-// Вывод всех ярлыков добавления задания
+// Р’С‹РІРѕРґ РІСЃРµС… СЏСЂР»С‹РєРѕРІ РґРѕР±Р°РІР»РµРЅРёСЏ Р·Р°РґР°РЅРёСЏ
 function SetLabelsAddTask() {
-    //console.log("Началось!");
-    // Строка с тегами
+    //console.log("РќР°С‡Р°Р»РѕСЃСЊ!");
+    // РЎС‚СЂРѕРєР° СЃ С‚РµРіР°РјРё
     var $LabelsLine = $('.fromAdd').find('.task-tags-menu');
-    // Массив 
+    // РњР°СЃСЃРёРІ 
     var $LiList = $('.fromAdd').find('.labels-menu li').not('.labelAddBtn');
-    // Очитса линии от предыдущих тегов
+    // РћС‡РёС‚СЃР° Р»РёРЅРёРё РѕС‚ РїСЂРµРґС‹РґСѓС‰РёС… С‚РµРіРѕРІ
     $LabelsLine.empty();
 
     for (var item = 0; item < $LiList.length; item++) {
@@ -17,13 +17,13 @@ function SetLabelsAddTask() {
         }
     }
 }
-// Вывод всех пользователей
+// Р’С‹РІРѕРґ РІСЃРµС… РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№
 function SetUsersAddTask() {
-    // Строка с тегами
+    // РЎС‚СЂРѕРєР° СЃ С‚РµРіР°РјРё
     var $UsersLine = $('.fromAdd').find('.task-users-menu');
-    // Массив 
+    // РњР°СЃСЃРёРІ 
     var $LiList = $('.fromAdd').find('.tool-user-changer li').not('.userAddBtn');
-    // Очитса линии от предыдущих тегов
+    // РћС‡РёС‚СЃР° Р»РёРЅРёРё РѕС‚ РїСЂРµРґС‹РґСѓС‰РёС… С‚РµРіРѕРІ
     $UsersLine.empty();
 
     for (var item = 0; item < $LiList.length; item++) {
@@ -35,25 +35,25 @@ function SetUsersAddTask() {
         }
     }
 }
-// Очистка формы добавления
+// РћС‡РёСЃС‚РєР° С„РѕСЂРјС‹ РґРѕР±Р°РІР»РµРЅРёСЏ
 function ClearAddFrom() {
     $title = $("input[name='TaskTitle']")[0];
     $text = $("textarea[name='TaskText']")[0];
     $labels = $("ul[name='LabelsList'] input[type='checkbox']");
     $users = $("ul[name='UsersList'] input[type='checkbox']");
 
-    // Очищаем
+    // РћС‡РёС‰Р°РµРј
     $($title).val("");
     $($text).val("");
     for (var i = 0; i < $labels.length; i++) { $labels[i].checked = false; }
     for (var d = 0; d < $users.length; d++) { $users[d].checked = false; }
-    // Очищаем линию ярлыков
+    // РћС‡РёС‰Р°РµРј Р»РёРЅРёСЋ СЏСЂР»С‹РєРѕРІ
     $('.fromAdd').find('.task-tags-menu').empty();
-    // Очищаем линию пользователей
+    // РћС‡РёС‰Р°РµРј Р»РёРЅРёСЋ РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№
     $('.fromAdd').find('.task-users-menu').empty();
 }
 
-// Удаление задания
+// РЈРґР°Р»РµРЅРёРµ Р·Р°РґР°РЅРёСЏ
 function DeleteTask(event) {
     var confirmation = confirm('Ahtung! You are trying delete this record, you know what are you doing?');
 
@@ -64,7 +64,7 @@ function DeleteTask(event) {
     var $taskId = $(event.currentTarget).attr('data-target');
     var $segment = $(event.currentTarget).parents('.task-box');
 
-    // Отправляем AJAX-запрос
+    // РћС‚РїСЂР°РІР»СЏРµРј AJAX-Р·Р°РїСЂРѕСЃ
     $.ajax({
         url: "/Home/AjaxDeleteTask",
         type: "POST",
@@ -73,12 +73,12 @@ function DeleteTask(event) {
 
     $segment.remove();
 };
-// Заполнение линии тегов
+// Р—Р°РїРѕР»РЅРµРЅРёРµ Р»РёРЅРёРё С‚РµРіРѕРІ
 function SetLabelsLineById(id) {
     var $element = $('.task-box#' + id);
-    // Массив 
+    // РњР°СЃСЃРёРІ 
     var $LiList = $($element).find('.labels-menu li').not('.labelAddBtn');
-    // Строка с тегами
+    // РЎС‚СЂРѕРєР° СЃ С‚РµРіР°РјРё
     var $tagsLine = $($element).find('.task-tags-menu');
     $tagsLine.empty();
 
@@ -93,13 +93,13 @@ function SetLabelsLineById(id) {
     }
 
 }
-// Заполнение панели пользователей
+// Р—Р°РїРѕР»РЅРµРЅРёРµ РїР°РЅРµР»Рё РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№
 function SetUsersLineById(id) {
     var $element = $('.task-box#' + id);
-    // Массив 
+    // РњР°СЃСЃРёРІ 
     var $LiList = $($element).find('.tool-user-changer li').not('.userAddBtn');
     //console.log($LiList);
-    // Строка с тегами
+    // РЎС‚СЂРѕРєР° СЃ С‚РµРіР°РјРё
     var $usersLine = $($element).find('.task-users-menu');
     $usersLine.empty();
 
@@ -112,27 +112,27 @@ function SetUsersLineById(id) {
     }
 
 }
-// Заполнение всех линий
+// Р—Р°РїРѕР»РЅРµРЅРёРµ РІСЃРµС… Р»РёРЅРёР№
 function SetLines(id) {
     SetLabelsLineById(id);
     SetUsersLineById(id);
 }
-// Редактирование ярлыков
+// Р РµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ СЏСЂР»С‹РєРѕРІ
 function LabelEdit(event) {
-    // Текущий элемент
+    // РўРµРєСѓС‰РёР№ СЌР»РµРјРµРЅС‚
     var $current = $(event.currentTarget);
     // Checkbox
     var $checkbox = $current.find('input');
-    // Берем ид записи
+    // Р‘РµСЂРµРј РёРґ Р·Р°РїРёСЃРё
     $taskId = $current.parents('.task-box').attr('id');
-    // Берем ид ярлыка
+    // Р‘РµСЂРµРј РёРґ СЏСЂР»С‹РєР°
     $labelId = $checkbox.attr('data-target');
-    // Берем статус
+    // Р‘РµСЂРµРј СЃС‚Р°С‚СѓСЃ
     $labelStatus = !($checkbox[0].checked);
-    // Меняем значение checkbox'а
+    // РњРµРЅСЏРµРј Р·РЅР°С‡РµРЅРёРµ checkbox'Р°
     $checkbox[0].checked = $labelStatus;
 
-    // Отправляем AJAX-запрос
+    // РћС‚РїСЂР°РІР»СЏРµРј AJAX-Р·Р°РїСЂРѕСЃ
     $.ajax({
         url: "/Home/AjaxSetTaskLabel",
         type: "POST",
@@ -140,28 +140,28 @@ function LabelEdit(event) {
         success: function (response) { }
     });
 
-    // Отладка
-    //console.log("taskId: " + $taskId + ", LabelId: " + $labelId + ", status: " + $labelStatus); // отладка
+    // РћС‚Р»Р°РґРєР°
+    //console.log("taskId: " + $taskId + ", LabelId: " + $labelId + ", status: " + $labelStatus); // РѕС‚Р»Р°РґРєР°
     SetLabelsLineById($taskId);
     return false;
 }
-// Редактирование пользователей
+// Р РµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№
 function UserEdit(event) {
-    console.log("Происходит добавление");
-    // Текущий элемент
+    console.log("РџСЂРѕРёСЃС…РѕРґРёС‚ РґРѕР±Р°РІР»РµРЅРёРµ");
+    // РўРµРєСѓС‰РёР№ СЌР»РµРјРµРЅС‚
     var $current = $(event.currentTarget);
     // Checkbox
     var $checkbox = $current.find('input');
-    // Берем ид записи
+    // Р‘РµСЂРµРј РёРґ Р·Р°РїРёСЃРё
     $taskId = $current.parents('.task-box').attr('id');
-    // Берем ид ярлыка
+    // Р‘РµСЂРµРј РёРґ СЏСЂР»С‹РєР°
     $userId = $checkbox.attr('data-target');
-    // Берем статус
+    // Р‘РµСЂРµРј СЃС‚Р°С‚СѓСЃ
     $userStatus = !$checkbox[0].checked;
-    // Меняем значение checkbox'а
+    // РњРµРЅСЏРµРј Р·РЅР°С‡РµРЅРёРµ checkbox'Р°
     $checkbox[0].checked = $userStatus;
 
-    // Отправляем AJAX-запрос
+    // РћС‚РїСЂР°РІР»СЏРµРј AJAX-Р·Р°РїСЂРѕСЃ
     $.ajax({
         url: "/Home/AjaxSetTaskUser",
         type: "POST",
@@ -169,19 +169,19 @@ function UserEdit(event) {
         success: function (response) { }
     });
 
-    // Отладка
-    //console.log("taskId: " + $taskId + ", UserId: " + $userId + ", status: " + $userStatus); // отладка
+    // РћС‚Р»Р°РґРєР°
+    //console.log("taskId: " + $taskId + ", UserId: " + $userId + ", status: " + $userStatus); // РѕС‚Р»Р°РґРєР°
     SetUsersLineById($taskId);
     return false;
 }
-// Изменение текста задания
+// РР·РјРµРЅРµРЅРёРµ С‚РµРєСЃС‚Р° Р·Р°РґР°РЅРёСЏ
 function TaskTextEdit(event) {
-    // Берем текст записи
+    // Р‘РµСЂРµРј С‚РµРєСЃС‚ Р·Р°РїРёСЃРё
     $text = $(event.currentTarget).val();
-    // Берем уникальный идентификатор записи
+    // Р‘РµСЂРµРј СѓРЅРёРєР°Р»СЊРЅС‹Р№ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ Р·Р°РїРёСЃРё
     $taskId = $(event.currentTarget).attr('name');
 
-    // Отправляем AJAX-запрос
+    // РћС‚РїСЂР°РІР»СЏРµРј AJAX-Р·Р°РїСЂРѕСЃ
     $.ajax({
         url: "/Home/AjaxSetTaskText",
         type: "POST",
@@ -189,18 +189,18 @@ function TaskTextEdit(event) {
         success: function (response) { }
     })
 
-    // Отладка
+    // РћС‚Р»Р°РґРєР°
     //console.log("tex: " + $text + ", taskId: " + $taskId);
     return false;
 }
-// Изменение заголовка задания
+// РР·РјРµРЅРµРЅРёРµ Р·Р°РіРѕР»РѕРІРєР° Р·Р°РґР°РЅРёСЏ
 function TaskTitleEdit(event) {
-    // Берем текст заголовка записи
+    // Р‘РµСЂРµРј С‚РµРєСЃС‚ Р·Р°РіРѕР»РѕРІРєР° Р·Р°РїРёСЃРё
     $text = $(event.currentTarget).val();
-    // Берем уникальный идентификатор записи
+    // Р‘РµСЂРµРј СѓРЅРёРєР°Р»СЊРЅС‹Р№ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ Р·Р°РїРёСЃРё
     $taskId = $(event.currentTarget).attr('name');
 
-    // Отправляем AJAX-запрос
+    // РћС‚РїСЂР°РІР»СЏРµРј AJAX-Р·Р°РїСЂРѕСЃ
     $.ajax({
         url: "/Home/AjaxSetTaskTitle",
         type: "POST",
@@ -208,12 +208,12 @@ function TaskTitleEdit(event) {
         success: function (response) { }
     })
 
-    // Отладка
+    // РћС‚Р»Р°РґРєР°
     //console.log("tex: " + $text + ", taskId: " + $taskId);
     return false;
 }
 
-// Гибгое изменение размера текстового поля
+// Р“РёР±РіРѕРµ РёР·РјРµРЅРµРЅРёРµ СЂР°Р·РјРµСЂР° С‚РµРєСЃС‚РѕРІРѕРіРѕ РїРѕР»СЏ
 function TextAreaResize() {
     var el = this;
     setTimeout(function () {
@@ -224,22 +224,22 @@ function TextAreaResize() {
     }, 0);
 }
 
-// Отправка изменений в заголовке задачи
+// РћС‚РїСЂР°РІРєР° РёР·РјРµРЅРµРЅРёР№ РІ Р·Р°РіРѕР»РѕРІРєРµ Р·Р°РґР°С‡Рё
 $('.task-title.editer input').on('blur', TaskTitleEdit);
-// Удаление записи
+// РЈРґР°Р»РµРЅРёРµ Р·Р°РїРёСЃРё
 $('.btn-exit.editer').on('click', DeleteTask);
-// Отправка изменений в тексте записи
+// РћС‚РїСЂР°РІРєР° РёР·РјРµРЅРµРЅРёР№ РІ С‚РµРєСЃС‚Рµ Р·Р°РїРёСЃРё
 $('.task-text.editer').on('blur', TaskTextEdit);
-// Отправка изменений о ярлыке задачи
+// РћС‚РїСЂР°РІРєР° РёР·РјРµРЅРµРЅРёР№ Рѕ СЏСЂР»С‹РєРµ Р·Р°РґР°С‡Рё
 $('.labels-menu.editer li').on('click', LabelEdit);
-// Отправка изменений пользователей задачи
+// РћС‚РїСЂР°РІРєР° РёР·РјРµРЅРµРЅРёР№ РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№ Р·Р°РґР°С‡Рё
 $('.users-menu.editer li').on('click', UserEdit);
 
-// Автоувеличение формы ввода текста (позаимствовал)
+// РђРІС‚РѕСѓРІРµР»РёС‡РµРЅРёРµ С„РѕСЂРјС‹ РІРІРѕРґР° С‚РµРєСЃС‚Р° (РїРѕР·Р°РёРјСЃС‚РІРѕРІР°Р»)
 $('textarea').on('keydown', TextAreaResize);
 
 
-// Выполнение заполнения линий для всех заданий
+// Р’С‹РїРѕР»РЅРµРЅРёРµ Р·Р°РїРѕР»РЅРµРЅРёСЏ Р»РёРЅРёР№ РґР»СЏ РІСЃРµС… Р·Р°РґР°РЅРёР№
 $(function () {
     $tasks = $('.task-box');
     if ($tasks.length > 1) {
@@ -249,7 +249,7 @@ $(function () {
         }
     }
 });
-// Добавление задания
+// Р”РѕР±Р°РІР»РµРЅРёРµ Р·Р°РґР°РЅРёСЏ
 $('#addBtn').on('click', function () {
     $title = $($("input[name='TaskTitle']")[0]).val();
     $text = $($("textarea[name='TaskText']")[0]).val();
@@ -287,7 +287,7 @@ $('#addBtn').on('click', function () {
     }
     //console.log($usersCheckbox);
     console.log({ Text: $text, Title: $title, Labels: labelsList, Users: usersList });
-    // Отправляем AJAX-запрос
+    // РћС‚РїСЂР°РІР»СЏРµРј AJAX-Р·Р°РїСЂРѕСЃ
     $.ajax({
         url: "/Home/AjaxAddTask",
         type: "POST",
@@ -296,34 +296,34 @@ $('#addBtn').on('click', function () {
     })
     
 });
-// Добавление задания по возвращенному ответу
+// Р”РѕР±Р°РІР»РµРЅРёРµ Р·Р°РґР°РЅРёСЏ РїРѕ РІРѕР·РІСЂР°С‰РµРЅРЅРѕРјСѓ РѕС‚РІРµС‚Сѓ
 function AddNewTask(response) {
-    // Отображение принятого сегмента (отладка)
+    // РћС‚РѕР±СЂР°Р¶РµРЅРёРµ РїСЂРёРЅСЏС‚РѕРіРѕ СЃРµРіРјРµРЅС‚Р° (РѕС‚Р»Р°РґРєР°)
     //console.log(response);
 
-    // Идентификатор задания
+    // РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ Р·Р°РґР°РЅРёСЏ
     taskId = $(response).find('.task-box').attr('id');
 
-    // Добавление сегмента из принятого
+    // Р”РѕР±Р°РІР»РµРЅРёРµ СЃРµРіРјРµРЅС‚Р° РёР· РїСЂРёРЅСЏС‚РѕРіРѕ
     $(response).insertAfter('.fromAdd');
     
-    // Находим задание
+    // РќР°С…РѕРґРёРј Р·Р°РґР°РЅРёРµ
     var $task = $('.task-box#' + taskId);
-    // Добавляем возможность удаления
+    // Р”РѕР±Р°РІР»СЏРµРј РІРѕР·РјРѕР¶РЅРѕСЃС‚СЊ СѓРґР°Р»РµРЅРёСЏ
     $task.find('.btn-exit.editer').on('click', DeleteTask);
-    // Добавляем возможность редактирования ярлыков
+    // Р”РѕР±Р°РІР»СЏРµРј РІРѕР·РјРѕР¶РЅРѕСЃС‚СЊ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёСЏ СЏСЂР»С‹РєРѕРІ
     $task.find('.dropdown-menu.labels-menu.editer li').not('.labelAddBtn').on('click', LabelEdit);
-    // Добавляем возможность редактирования пользователей
+    // Р”РѕР±Р°РІР»СЏРµРј РІРѕР·РјРѕР¶РЅРѕСЃС‚СЊ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёСЏ РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№
     $task.find('.dropdown-menu.users-menu.editer li').not('.userAddBtn').on('click', UserEdit);
-    // Добавляем возможность изменить заголовок
+    // Р”РѕР±Р°РІР»СЏРµРј РІРѕР·РјРѕР¶РЅРѕСЃС‚СЊ РёР·РјРµРЅРёС‚СЊ Р·Р°РіРѕР»РѕРІРѕРє
     $task.find('.task-title.editer input').on('blur', TaskTitleEdit);
-    // Добавляем возможность изменить текст
+    // Р”РѕР±Р°РІР»СЏРµРј РІРѕР·РјРѕР¶РЅРѕСЃС‚СЊ РёР·РјРµРЅРёС‚СЊ С‚РµРєСЃС‚
     $task.find('.task-text.editer').on('blur', TaskTextEdit);
 
-    // Показ линий
+    // РџРѕРєР°Р· Р»РёРЅРёР№
     SetLines(taskId);
 
-    // Очистка формы добавления
+    // РћС‡РёСЃС‚РєР° С„РѕСЂРјС‹ РґРѕР±Р°РІР»РµРЅРёСЏ
     ClearAddFrom();
 }
 
@@ -373,13 +373,13 @@ function AddNewLabelToList(response) {
 
     resultColor = "";
     switch (color) {
-        case "красный":
+        case "РєСЂР°СЃРЅС‹Р№":
             resultColor = "#f33"
             break;
-        case "желтый":
+        case "Р¶РµР»С‚С‹Р№":
             resultColor = "#f3f"
             break;
-        case "белый":
+        case "Р±РµР»С‹Р№":
             resultColor = "#fff"
             break;
     }
@@ -411,7 +411,7 @@ function AddNewLabelToList(response) {
         }
     }
 
-    // Очистка
+    // РћС‡РёСЃС‚РєР°
     $('#label-add-color-change label.active checkbox').checked = false;
     $('#label-add-color-change label.active').removeClass('active');
 
@@ -420,22 +420,29 @@ function AddNewLabelToList(response) {
 
     text = $('#label-add-name-change').val('');
 
+    var buttonAccept = $('#label-add-accept');
+    buttonAccept.addClass('disabled');
+
     return null;
 }
 
-// Очистка добавляющей формы
+// РћС‡РёСЃС‚РєР° РґРѕР±Р°РІР»СЏСЋС‰РµР№ С„РѕСЂРјС‹
 $('.task-delete').not('.editer').on('click', ClearAddFrom);
-// Показ ярлыков которые выбраны
+// РџРѕРєР°Р· СЏСЂР»С‹РєРѕРІ РєРѕС‚РѕСЂС‹Рµ РІС‹Р±СЂР°РЅС‹
 $('.task-tools-menu').not('.editer').find('li').on('click', SetLabelsAddTask);
-// Показ пользователей которые выбраны
+// РџРѕРєР°Р· РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№ РєРѕС‚РѕСЂС‹Рµ РІС‹Р±СЂР°РЅС‹
 $('.tool-user-changer').not('.editer').find('li').not('.userAddBtn').on('click', SetUsersAddTask);
 
 $('#label-add-accept').on('click', function (event) {
+    if ($(event.currentTarget).hasClass('disabled')) {
+        return false;
+    }
+
     var $object = $(event.currentTarget).parents('.labelAddForm');
     var $LabelsList = $($object).find('#label-add-color-change').first();
     var $chackedLabel = $($LabelsList).find('input:checked').parent('label');
     
-    // Поиск нужных данных
+    // РџРѕРёСЃРє РЅСѓР¶РЅС‹С… РґР°РЅРЅС‹С…
     color = $($chackedLabel).text();
     text = $($object).find('#label-add-name-change').val();
     
@@ -454,7 +461,6 @@ $('#user-search-btn').on('click', function (event) {
     if (text.length < 3) {
         return null;
     }
-    //console.log("start search with: text='" + text + "'");
     
     $.ajax({
         url: "/Home/SearchUserByNameOrEmail",
@@ -465,12 +471,12 @@ $('#user-search-btn').on('click', function (event) {
             var $resultSegment = $($input).parent().siblings('#users-result-list');
             $resultSegment.empty();
             $resultSegment.append($('<hr />'));
-            $resultSegment.append($('<h4 class="text-center"><b>resultat:</b></h4>'));
+            $resultSegment.append($('<h4 class="text-center"><b>Р РµР·СѓР»СЊС‚Р°С‚:</b></h4>'));
 
             $resultSegment.append($(result));
 
-            // Нажатие на кнопки которые были получены от сервера
-            $('#users-result-list button').on('click', function (event) {
+            // РќР°Р¶Р°С‚РёРµ РЅР° РєРЅРѕРїРєРё РєРѕС‚РѕСЂС‹Рµ Р±С‹Р»Рё РїРѕР»СѓС‡РµРЅС‹ РѕС‚ СЃРµСЂРІРµСЂР°
+            $('#users-result-list button').not('.disabled').on('click', function (event) {
                 if ($(event.currentTarget).hasClass('active')) {
                     return false;
                 }
@@ -528,4 +534,16 @@ $('#user-add-accept').on('click', function (event) {
         success: AddNewUserToLists
     });
     
+});
+
+$('#label-add-name-change').keyup(function (event) {
+    var length = $(event.currentTarget).val().length;
+    var buttonAccept = $('#label-add-accept');
+    if (length == 0) {
+        if (!buttonAccept.hasClass('disabled')) {
+            buttonAccept.addClass('disabled');
+        }
+    } else if (buttonAccept.hasClass('disabled')) {
+        buttonAccept.removeClass('disabled');
+    }
 });

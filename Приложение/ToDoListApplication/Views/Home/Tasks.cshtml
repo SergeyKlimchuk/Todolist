@@ -92,7 +92,7 @@
 
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
-                        <button type="button" class="btn btn-primary" id="label-add-accept" data-dismiss="modal">Создать</button>
+                        <button type="button" class="btn btn-primary disabled" id="label-add-accept" data-dismiss="modal">Создать</button>
                     </div>
 
                 </div>
@@ -144,6 +144,7 @@
 
 @section scripts {
     
-    @Scripts.Render("~/Scripts/dropdowns-enhancement.js")
-    @Scripts.Render("~/Scripts/tasks.js")
+    @Scripts.Render("~/Scripts/dropdowns-enhancement.js",
+                    "~/Scripts/tasks.js")
+
 }

@@ -214,7 +214,17 @@ namespace ToDoListApplication.Controllers
         [HttpPost]
         public PartialViewResult SearchUserByNameOrEmail(string pattern)
         {
+            // Находим пользователя по предпологаемому паттерну
             List<ApplicationUser> users = dataContext.Users.Where(u => u.Id.Contains(pattern) || u.Email.Contains(pattern)).ToList();
+
+            string userId = User.Identity.GetUserId();
+            ApplicationUser currentUser = dataContext.Users.Single(u => u.Id == userId);
+
+            if (users.Contains(currentUser))
+            {
+                users.Remove(currentUser);
+            }
+
             PartialViewResult viewResult = PartialView("~/Views/Shared/_ListOfFoundUsers.cshtml", users);
 
             return viewResult;
@@ -249,6 +259,17 @@ namespace ToDoListApplication.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
+                try
+                {
+                    string userId = User.Identity.GetUserId();
+                    ApplicationUser user = dataContext.Users.Single(u => u.Id == userId);
+                }
+                catch
+                {
+                    return View();
+                }
+
+
                 return new RedirectResult("~/Home/Tasks");
             }
 
@@ -259,13 +280,27 @@ namespace ToDoListApplication.Controllers
         [HttpGet]
         public ActionResult Tasks(int? page = 1)
         {
+            string userId = null;
+            ApplicationUser user = null;
+
             if (!User.Identity.IsAuthenticated)
             {
                 return new RedirectResult("~/");
             }
+            else
+            {
+                try
+                {
+                    userId = User.Identity.GetUserId();
+                    user = dataContext.Users.Single(u => u.Id == userId);
+                }
+                catch
+                {
+                    return new RedirectResult("~/");
+                }
+            }
 
-            string userId = User.Identity.GetUserId();
-            ApplicationUser user = dataContext.Users.Single(u => u.Id == userId);
+            
             List<TaskModel> tasks = user.Tasks.OrderByDescending(x => x.Id).ToList();
             ViewBag.LabelsList = user.Labels;
             ViewBag.FriendsList = user.Friends;
