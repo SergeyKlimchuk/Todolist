@@ -2,35 +2,35 @@
 function SetLabelsAddTask() {
     //console.log("Началось!");
     // Строка с тегами
-    var $LabelsLine = $('.fromAdd').find('.task-tags-menu');
+    var LabelsLine = $('.fromAdd').find('.task-tags-menu');
     // Массив 
-    var $LiList = $('.fromAdd').find('.labels-menu li').not('.labelAddBtn');
+    var LiList = $('.fromAdd').find('.labels-menu li').not('.labelAddBtn');
     // Очитса линии от предыдущих тегов
-    $LabelsLine.empty();
+    LabelsLine.empty();
 
-    for (var item = 0; item < $LiList.length; item++) {
-        var $checkBox = $($LiList[item]).find('input:checkbox')[0];
-        var $labelText = $($LiList[item]).find('label').text();
+    for (var item = 0; item < LiList.length; item++) {
+        var checkBox = $(LiList[item]).find('input:checkbox')[0];
+        var labelText = $(LiList[item]).find('label').text();
 
-        if ($checkBox.checked) {
-            $($LabelsLine).append($("<span class='label-segment pull-right'>" + $labelText + "</span>"));
+        if (checkBox.checked) {
+            $(LabelsLine).append($("<span class='label-segment pull-right'>" + labelText + "</span>"));
         }
     }
 }
 // Вывод всех пользователей
 function SetUsersAddTask() {
     // Строка с тегами
-    var $UsersLine = $('.fromAdd').find('.task-users-menu');
+    var UsersLine = $('.fromAdd').find('.task-users-menu');
     // Массив 
-    var $LiList = $('.fromAdd').find('.tool-user-changer li').not('.userAddBtn');
+    var LiList = $('.fromAdd').find('.tool-user-changer li').not('.userAddBtn');
     // Очитса линии от предыдущих тегов
-    $UsersLine.empty();
+    UsersLine.empty();
 
-    for (var item = 0; item < $LiList.length; item++) {
-        var $checkBox = $($LiList[item]).find('input:checkbox')[0];
-        var $userName = $($LiList[item]).find('label').text();
-        console.log($($checkBox).checked);
-        if ($checkBox.checked) {
+    for (var item = 0; item < LiList.length; item++) {
+        var checkBox = $(LiList[item]).find('input:checkbox')[0];
+        var userName = $(LiList[item]).find('label').text();
+        //console.log($(checkBox).checked);
+        if (checkBox.checked) {
             $($UsersLine).append($("<span class='label-segment pull-right'>" + $userName + "</span>"));
         }
     }
