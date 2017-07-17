@@ -31,7 +31,7 @@ namespace ToDoListApplication.Models
         /// <summary>
         /// Идентификатор автора задания.
         /// </summary>
-        public ApplicationUser Author { get; set; }
+        public virtual ApplicationUser Author { get; set; }
         /// <summary>
         /// Идентификаторы привязанных ярлыков.
         /// </summary>

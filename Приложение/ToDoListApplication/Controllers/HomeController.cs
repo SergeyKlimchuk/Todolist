@@ -154,16 +154,14 @@ namespace ToDoListApplication.Controllers
         [HttpPost]
         public ActionResult AjaxDeleteTask(int taskId)
         {
-            var tasks = dataContext.Tasks.ToList();
-            var userId = User.Identity.GetUserId();
-            ApplicationUser user = dataContext.Users.Single(u => u.Id == userId);
-            TaskModel task = user.Tasks.Single(t => t.Id == taskId);
-            user.Tasks.Remove(task);
+            TaskModel task = dataContext.Tasks.Where(t => t.Id == taskId).FirstOrDefault();
+            if (task.Users.Count > 0)
+            {
+                task.Users.Clear();
+            }
+            dataContext.Entry(task).State = EntityState.Deleted;
             dataContext.SaveChanges();
-
-            //TaskModel task = dataContext.Tasks.Include(x => x.Author).Single(t => t.Id == taskId);
-            //dataContext.Tasks.Remove(task);
-            //dataContext.SaveChanges();
+            
             return new EmptyResult();
         }
         /// <summary>
@@ -317,6 +315,7 @@ namespace ToDoListApplication.Controllers
             }
             
             List<TaskModel> tasks = user.Tasks.OrderByDescending(x => x.Id).ToList();
+            tasks.AddRange(dataContext.Tasks.Where(t => t.Users.Select(u => u.Id).Contains(userId)));
             ViewBag.LabelsList = user.Labels;
             ViewBag.FriendsList = user.Friends;
 

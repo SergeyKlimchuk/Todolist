@@ -23,7 +23,7 @@ namespace ToDoListApplication.Models
         /// <summary>
         /// Автор ярлыка.
         /// </summary>
-        public ApplicationUser Author { get; set; }
+        public virtual ApplicationUser Author { get; set; }
         /// <summary>
         /// Системное, свзязь ярлык -> пользователи.
         /// </summary>
