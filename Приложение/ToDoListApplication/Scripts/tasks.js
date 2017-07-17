@@ -31,7 +31,7 @@ function SetUsersAddTask() {
         var userName = $(LiList[item]).find('label').text();
         //console.log($(checkBox).checked);
         if (checkBox.checked) {
-            $($UsersLine).append($("<span class='label-segment pull-right'>" + $userName + "</span>"));
+            $(UsersLine).append($("<span class='label-segment pull-right'>" + userName + "</span>"));
         }
     }
 }
