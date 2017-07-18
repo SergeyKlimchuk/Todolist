@@ -1,4 +1,5 @@
 ﻿@using ToDoListApplication.Models
+@using Microsoft.AspNet.Identity
 @model TaskModel
         <div class="row">
 
@@ -37,17 +38,26 @@
                         <div class="btn-group tool-tag-changer">
                             <span data-toggle="dropdown" class="glyphicon dropdown-toggle" data-placeholder="false" ></span>
                             <ul class="dropdown-menu labels-menu bullet editer">
-                                @foreach (LabelModel label in ViewBag.LabelsList)
-                                {
-                                    string index = Model.Id + "_" + label.Id;
-                                    string check = "";
-                                    if (Model.Labels != null && Model.Labels.Contains(label))
+                                @{
+                                    foreach (LabelModel label in Model.Labels)
                                     {
-                                        check = "checked";
+                                        string index = Model.Id + "_" + label.Id;
+                                        <li>
+                                            <input type="checkbox" id="@index" data-target="@label.Id" checked /><label for="@index">@label.Text</label>
+                                        </li>
                                     }
-                                    <li>
-                                        <input type="checkbox" id="@index" data-target="@label.Id" @check /><label for="@index">@label.Text</label>
-                                    </li>
+
+                                    foreach (LabelModel label in ViewBag.LabelsList)
+                                    {
+                                        if (Model.Labels.Contains(label))
+                                        {
+                                            continue;
+                                        }
+                                        string index = Model.Id + "_" + label.Id;
+                                        <li>
+                                            <input type="checkbox" id="@index" data-target="@label.Id" /><label for="@index">@label.Text</label>
+                                        </li>
+                                    }
                                 }
                                 <li class="labelAddBtn text-center" data-toggle="modal" data-target=".label-modal">Добавить ярлык <b>+</b></li>
                             </ul>

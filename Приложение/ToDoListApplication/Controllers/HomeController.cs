@@ -65,9 +65,9 @@ namespace ToDoListApplication.Controllers
         public ActionResult AjaxSetTaskUser(int taskId, string userId, bool isAddAction)
         {
             TaskModel currentTask = dataContext.Tasks
-                .Single(t => t.Id == taskId);
+                .Where(t => t.Id == taskId).FirstOrDefault();
 
-            ApplicationUser user = dataContext.Users.Single(u => u.Id == userId);
+            ApplicationUser user = dataContext.Users.Where(u => u.Id == userId).FirstOrDefault();
             
             if (isAddAction)
             {
@@ -94,9 +94,9 @@ namespace ToDoListApplication.Controllers
         public ActionResult AjaxSetTaskLabel(int taskId, int labelId, bool isAddAction)
         {
             TaskModel currentTask = dataContext.Tasks
-                .Single(t => t.Id == taskId);
+                .Where(t => t.Id == taskId).FirstOrDefault();
 
-            LabelModel label = dataContext.Labels.Single(u => u.Id == labelId);
+            LabelModel label = dataContext.Labels.Where(u => u.Id == labelId).FirstOrDefault();
 
             if (isAddAction)
             {
