@@ -54,25 +54,24 @@ function ClearAddFrom() {
 }
 
 // Удаление задания
-function DeleteTask(event) {
-    var confirmation = confirm('Ahtung! You are trying delete this record, you know what are you doing?');
+function DeleteTaskMessage(event) {
+    $('#delete-confirm').modal('show');
+    var taskId = $(event.currentTarget).attr('data-target');
+    $('#delete-task-btn').attr('data-id', taskId);
+};
+function DeleteTaskById(event) {
 
-    if (!confirmation) {
-        return false;
-    }
-
-    var $taskId = $(event.currentTarget).attr('data-target');
-    var $segment = $(event.currentTarget).parents('.task-box');
-
+    var taskId = $(event.currentTarget).attr('data-id');
+    var segment = $('.task-box#' + taskId);
     // Отправляем AJAX-запрос
     $.ajax({
         url: "/Home/AjaxDeleteTask",
         type: "POST",
-        data: "taskId=" + $taskId
+        data: "taskId=" + taskId
     })
 
-    $segment.remove();
-};
+    segment.remove();
+}
 // Заполнение линии тегов
 function SetLabelsLineById(id) {
     var $element = $('.task-box#' + id);
@@ -247,10 +246,12 @@ function StatusEdit(event) {
     });
 }
 
+// Удаление задания
+$('#delete-task-btn').on('click', DeleteTaskById);
 // Отправка изменений в заголовке задачи
 $('.task-title.editer input').on('blur', TaskTitleEdit);
 // Удаление записи
-$('.btn-exit.editer').on('click', DeleteTask);
+$('.btn-exit.editer').on('click', DeleteTaskMessage);
 // Отправка изменений в тексте записи
 $('.task-text.editer').on('blur', TaskTextEdit);
 // Отправка изменений о ярлыке задачи
@@ -333,7 +334,7 @@ function AddNewTask(response) {
     // Находим задание
     var $task = $('.task-box#' + taskId);
     // Добавляем возможность удаления
-    $task.find('.btn-exit.editer').on('click', DeleteTask);
+    $task.find('.btn-exit.editer').on('click', DeleteTaskMessage);
     // Добавляем возможность редактирования ярлыков
     $task.find('.dropdown-menu.labels-menu.editer li').not('.labelAddBtn').on('click', LabelEdit);
     // Добавляем возможность редактирования пользователей

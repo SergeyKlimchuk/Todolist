@@ -39,17 +39,20 @@
                             <span data-toggle="dropdown" class="glyphicon dropdown-toggle" data-placeholder="false" ></span>
                             <ul class="dropdown-menu labels-menu bullet editer">
                                 @{
-                                    foreach (LabelModel label in Model.Labels)
+                                    if (Model.Labels != null)
                                     {
-                                        string index = Model.Id + "_" + label.Id;
-                                        <li>
-                                            <input type="checkbox" id="@index" data-target="@label.Id" checked /><label for="@index">@label.Text</label>
-                                        </li>
+                                        foreach (LabelModel label in Model.Labels)
+                                        {
+                                            string index = Model.Id + "_" + label.Id;
+                                            <li>
+                                                <input type="checkbox" id="@index" data-target="@label.Id" checked /><label for="@index">@label.Text</label>
+                                            </li>
+                                        }
                                     }
 
                                     foreach (LabelModel label in ViewBag.LabelsList)
                                     {
-                                        if (Model.Labels.Contains(label))
+                                        if (Model.Labels != null && Model.Labels.Contains(label))
                                         {
                                             continue;
                                         }
