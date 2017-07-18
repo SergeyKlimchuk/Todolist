@@ -65,17 +65,27 @@
                         <div class="btn-group tool-user-changer">
                             <span data-toggle="dropdown" class="glyphicon dropdown-toggle" data-placeholder="false"></span>
                             <ul class="dropdown-menu users-menu bullet editer">
-                                @foreach (ApplicationUser friend in ViewBag.FriendsList)
-                                {
-                                    string index = Model.Id + "_" + friend.Id;
-                                    string check = "";
-                                    if (Model.Users != null && Model.Users.Contains(friend))
+                                @{
+                                    foreach (ApplicationUser user in Model.Users)
                                     {
-                                        check = "checked";
+                                        string index = Model.Id + "_" + user.Id;
+                                        <li>
+                                            <input type="checkbox" id="@index" data-target="@user.Id" checked><label for="@index">@user.Email</label>
+                                        </li>
                                     }
-                                    <li>
-                                        <input type="checkbox" id="@index" data-target="@friend.Id" @check><label for="@index">@friend.Email</label>
-                                    </li>
+
+                                    foreach (ApplicationUser user in ViewBag.FriendsList)
+                                    {
+                                        if (Model.Users.Contains(user))
+                                        {
+                                            continue;
+                                        }
+
+                                        string index = Model.Id + "_" + user.Id;
+                                        <li>
+                                            <input type="checkbox" id="@index" data-target="@user.Id" ><label for="@index">@user.Email</label>
+                                        </li>
+                                    }
                                 }
                                 <li class="userAddBtn text-center" data-toggle="modal" data-target=".user-modal">Добавить пользователя <b>+</b></li>
                             </ul>
