@@ -69,17 +69,20 @@
                             <span data-toggle="dropdown" class="glyphicon dropdown-toggle" data-placeholder="false"></span>
                             <ul class="dropdown-menu users-menu bullet editer">
                                 @{
-                                    foreach (ApplicationUser user in Model.Users)
+                                    if (Model.Users != null)
                                     {
-                                        string index = Model.Id + "_" + user.Id;
-                                        <li>
-                                            <input type="checkbox" id="@index" data-target="@user.Id" checked><label for="@index">@user.Email</label>
-                                        </li>
+                                        foreach (ApplicationUser user in Model.Users)
+                                        {
+                                            string index = Model.Id + "_" + user.Id;
+                                            <li>
+                                                <input type="checkbox" id="@index" data-target="@user.Id" checked><label for="@index">@user.Email</label>
+                                            </li>
+                                        }
                                     }
 
                                     foreach (ApplicationUser user in ViewBag.FriendsList)
                                     {
-                                        if (Model.Users.Contains(user))
+                                        if (Model.Users != null && Model.Users.Contains(user))
                                         {
                                             continue;
                                         }
