@@ -25,7 +25,7 @@ namespace ToDoListApplication.Models
         /// </summary>
         public virtual ApplicationUser Author { get; set; }
         /// <summary>
-        /// Системное, свзязь ярлык -> пользователи.
+        /// Системное, свзязь ярлык -> задания.
         /// </summary>
         public virtual ICollection<TaskModel> Tasks { get; set; }
         

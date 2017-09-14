@@ -11,7 +11,7 @@ body {
 }
 
 .task-box {
-    background-color: #3F4448;
+    background-color: #333;
     border-radius: 4px;
     border: 1px #21262A solid;
     margin-top: 20px;
@@ -64,15 +64,21 @@ body {
 
 
 .task-tags-menu {
-    background-color: rgba(255, 255, 255, 0.2);
+    /*background-color: rgba(255, 255, 255, 0.2);*/
+    border-top: 1px #828282 solid;
+}
+
+.task-tags-menu:empty {
+    border-top: red;
 }
 
 .task-users-menu {
-    background-color: rgba(255, 255, 255, 0.2);
+    /*background-color: rgba(255, 255, 255, 0.2);*/
+    border-top: 1px #828282 solid;
 }
 
 .task-tools-menu {
-    background-color: #21262A;
+    background-color: #222;
     height: 25px;
     border-top: 1px solid white;
     cursor: default;
@@ -107,18 +113,6 @@ body {
 
 .tool-user-changer.open > span {
     background-image: url('Icons/Authors.png');
-}
-
-.label-segment {
-    margin: 5px 5px;
-    padding: 0px 5px;
-    padding-left: 15px;
-    border-radius: 5px;
-    border-bottom-left-radius: 20px;
-    border-top-left-radius: 20px;
-    background-color: white;
-    cursor: default;
-    border: 1px solid #ccc;
 }
 
 .task-delete{
@@ -199,4 +193,16 @@ ul[name=UsersList], ul.users-menu {
 .task-status {
     cursor: pointer;
     transition: .2s;
+}
+
+.task-tags-menu span {
+    margin: 5px 10px;
+}
+
+.btn-group.open .glyphicon.dropdown-toggle {
+    background-color: #75CA84;
+}
+
+.task-users-menu span {
+    margin: 5px 10px;
 }

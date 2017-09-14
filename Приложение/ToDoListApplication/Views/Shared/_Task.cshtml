@@ -45,7 +45,8 @@
                                         {
                                             string index = Model.Id + "_" + label.Id;
                                             <li>
-                                                <input type="checkbox" id="@index" data-target="@label.Id" checked /><label for="@index">@label.Text</label>
+                                                <input type="checkbox" id="@index" data-target="@label.Id" label-color="@label.Color" checked />
+                                                <label for="@index">@label.Text</label>
                                             </li>
                                         }
                                     }
@@ -58,7 +59,8 @@
                                         }
                                         string index = Model.Id + "_" + label.Id;
                                         <li>
-                                            <input type="checkbox" id="@index" data-target="@label.Id" /><label for="@index">@label.Text</label>
+                                            <input type="checkbox" id="@index" data-target="@label.Id" label-color="@label.Color" />
+                                            <label for="@index">@label.Text</label>
                                         </li>
                                     }
                                 }

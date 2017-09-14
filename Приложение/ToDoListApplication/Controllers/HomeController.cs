@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.Mvc;
 using ToDoListApplication.Models;
 using System.Data.SqlClient;
+using ToDoListApplication.Exceptions;
 
 namespace ToDoListApplication.Controllers
 {
@@ -118,25 +119,22 @@ namespace ToDoListApplication.Controllers
         [HttpPost]
         public ActionResult AjaxAddTask(TaskModel task)
         {
-            // Производим вставку ярлыков по переданным идентификаторам
+            // Т.к. передаются только идентификаторы соединять будем вручную
             if (task.Labels != null)
-            {
-                IEnumerable<int> labelsIds = task.Labels.Select(l => l.Id);
-                task.Labels = dataContext.Labels.Where(l => labelsIds.Contains(l.Id)).ToList();
-            }
-            
-            // Производим вставку пользователей по переданным идентификаторам
+                task.Labels = task.Labels.Join(dataContext.Labels, 
+                    d => d.Id, l => l.Id, 
+                    (d, l) => l).ToList();
             if (task.Users != null)
-            {
-                IEnumerable<string> usersIds = task.Users.Select(u => u.Id);
-                task.Users = dataContext.Users.Where(u => usersIds.Contains(u.Id)).ToList();
-            }
+                task.Users = task.Users.Join(dataContext.Users, 
+                    d => d.Id, l => l.Id, 
+                    (d, l) => l).ToList();
 
+            //TODO: Реализовать оповещения
             task.AlarmTime = DateTime.Now;
-
-            string userId = User.Identity.GetUserId();
-            ApplicationUser user = dataContext.Users.Single(u => u.Id == userId);
-            task.Author = user;
+            
+            ApplicationUser user = GetCurrentUser();
+            
+            task.Author_id = user;
 
             user.Tasks.Add(task);
             dataContext.SaveChanges();
@@ -154,12 +152,30 @@ namespace ToDoListApplication.Controllers
         [HttpPost]
         public ActionResult AjaxDeleteTask(int taskId)
         {
-            TaskModel task = dataContext.Tasks.Where(t => t.Id == taskId).FirstOrDefault();
-            if (task.Users.Count > 0)
+            // Находим задание
+            TaskModel task = dataContext.Tasks.FirstOrDefault(t => t.Id == taskId);
+            // Если задание не найдено
+            if (task == null)
+                throw new TaskNotFoundException();
+            
+            ApplicationUser user = GetCurrentUser();
+            // Удалить задание может только автор
+            if (task.Author_id == user)
             {
-                task.Users.Clear();
+                dataContext.Tasks.Remove(task);
             }
-            dataContext.Entry(task).State = EntityState.Deleted;
+            else
+            {
+                // Если пользователь содержится в списке просматривающих он может отписаться
+                if (task.Users.Contains(user))
+                {
+                    task.Users.Remove(user);
+                }
+                else
+                    throw new TaskDeleteAccesDeniedException();
+                
+            }
+            // Сохраняем изминения
             dataContext.SaveChanges();
             
             return new EmptyResult();
@@ -171,18 +187,12 @@ namespace ToDoListApplication.Controllers
         /// <returns>HTML-сегмент.</returns>
         public PartialViewResult GetRenderedTask(int id)
         {
-            // Находим модель по id
+            // Находим задание по id
             TaskModel task = dataContext.Tasks.Single(t => t.Id == id);
-
-            string userId = User.Identity.GetUserId();
-
-            List<LabelModel> labels = dataContext.Labels.Where(x => x.Author.Id == userId).ToList();
-            List<ApplicationUser> friends = dataContext.Users.Single(x => x.Id == userId).Friends.ToList();
-
-            // Добавляем вторичные данные
-            ViewBag.LabelsList = labels;
-            ViewBag.FriendsList = friends;
-            
+            // Добавляем перечень всех ярлыков
+            ViewBag.LabelsList = GetCurrentUser().Labels.ToList();
+            // Добавляем перечень всех друзей
+            ViewBag.FriendsList = GetCurrentUser().Friends.ToList();
             // Генерируем частичное представление
             PartialViewResult partialView = PartialView("~/Views/Shared/_Task.cshtml", task);
             
@@ -197,12 +207,10 @@ namespace ToDoListApplication.Controllers
         [HttpPost]
         public ActionResult AddLabel(LabelModel label)
         {
-            string userId = User.Identity.GetUserId();
-            dataContext.Users.Single(u => u.Id == userId).Labels.Add(label);
+            GetCurrentUser().Labels.Add(label);
             dataContext.SaveChanges();
-            Response.Write(label.Id);
-
-            return new EmptyResult();
+            JsonResult result = new JsonResult() { Data = Json(new { label.Id, label.Color }) };
+            return result;
         }
         /// <summary>
         /// Добавление ярлыка.
@@ -212,16 +220,15 @@ namespace ToDoListApplication.Controllers
         [HttpPost]
         public PartialViewResult SearchUserByNameOrEmail(string pattern)
         {
-            // Находим пользователя по предпологаемому паттерну
+            // Находим пользователей со схожим иминем или почтой
             List<ApplicationUser> users = dataContext.Users.Where(u => u.Id.Contains(pattern) || u.Email.Contains(pattern)).ToList();
-
-            string userId = User.Identity.GetUserId();
-            ApplicationUser currentUser = dataContext.Users.Single(u => u.Id == userId);
-
+            // Находим текущего пользователя
+            ApplicationUser currentUser = GetCurrentUser();
+            // Проверка: вдруг пользователь решил найти себя
             if (users.Contains(currentUser))
-            {
                 users.Remove(currentUser);
-            }
+            // Проверка: если найдены пользователи которые уже у пользователя в друзьях
+            users.RemoveAll(x => currentUser.Friends.Contains(x));
 
             PartialViewResult viewResult = PartialView("~/Views/Shared/_ListOfFoundUsers.cshtml", users);
 
@@ -235,16 +242,15 @@ namespace ToDoListApplication.Controllers
         [HttpPost]
         public ActionResult AddFriend(string userId)
         {
-            ApplicationUser user = dataContext.Users.Single(u => u.Id == userId);
-            string currentUserId = User.Identity.GetUserId();
-            ApplicationUser currentUser = dataContext.Users.Single(u => u.Id == currentUserId);
-            
-            if (!currentUser.Friends.Contains(user))
-            {
-                currentUser.Friends.Add(user);
-                dataContext.SaveChanges();
-            }
-            Response.Write(user.Id);
+            ApplicationUser newFriend = dataContext.Users.Single(u => u.Id == userId);
+            ApplicationUser currentUser = GetCurrentUser();
+
+            if (currentUser.Friends.Contains(newFriend))
+                throw new Exception("Пользователь уже в друзьях!");
+
+            currentUser.Friends.Add(newFriend);
+            dataContext.SaveChanges();
+            Response.Write(newFriend.Id);
 
             return new EmptyResult();
         }
@@ -275,8 +281,7 @@ namespace ToDoListApplication.Controllers
             {
                 try
                 {
-                    string userId = User.Identity.GetUserId();
-                    ApplicationUser user = dataContext.Users.Single(u => u.Id == userId);
+                    ApplicationUser user = GetCurrentUser();
                 }
                 catch
                 {
@@ -294,7 +299,6 @@ namespace ToDoListApplication.Controllers
         [HttpGet]
         public ActionResult Tasks(int? page = 1)
         {
-            string userId = null;
             ApplicationUser user = null;
 
             if (!User.Identity.IsAuthenticated)
@@ -305,8 +309,7 @@ namespace ToDoListApplication.Controllers
             {
                 try
                 {
-                    userId = User.Identity.GetUserId();
-                    user = dataContext.Users.Single(u => u.Id == userId);
+                    user = GetCurrentUser();
                 }
                 catch
                 {
@@ -315,7 +318,7 @@ namespace ToDoListApplication.Controllers
             }
             
             List<TaskModel> tasks = user.Tasks.OrderByDescending(x => x.Id).ToList();
-            tasks.AddRange(dataContext.Tasks.Where(t => t.Users.Select(u => u.Id).Contains(userId)));
+            tasks.AddRange(dataContext.Tasks.Where(t => t.Users.Select(u => u.Id).Contains(user.Id)));
             ViewBag.LabelsList = user.Labels;
             ViewBag.FriendsList = user.Friends;
 
@@ -369,7 +372,7 @@ namespace ToDoListApplication.Controllers
                 Text = "Купить хлебушка, вспомнить что сам хлебушек",
                 Labels = new List<LabelModel> { label2, label1 },
                 Users = null,
-                Author = user,
+                Author_id = user,
                 AlarmTime = DateTime.Now
             };
             TaskModel task2 = new TaskModel
@@ -378,7 +381,7 @@ namespace ToDoListApplication.Controllers
                 Text = "Сдать отчет г. директору предприятия 'ЦЕСНА'",
                 Labels = new List<LabelModel> { label2, label1 },
                 Users = null,
-                Author = user,
+                Author_id = user,
                 AlarmTime = DateTime.Now
             };
             user.Tasks.Add(task1);
@@ -388,6 +391,12 @@ namespace ToDoListApplication.Controllers
             dataContext.SaveChanges();
         }
         
+        // Получаем текущего пользователя
+        protected ApplicationUser GetCurrentUser()
+        {
+            string userId = User.Identity.GetUserId();
+            return dataContext.Users.Single(u => u.Id == userId);
+        }
 
         #endregion
     }

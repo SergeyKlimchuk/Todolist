@@ -41,7 +41,8 @@
                             <ul class="dropdown-menu labels-menu bullet" name="LabelsList">
                                 @foreach (LabelModel label in ViewBag.LabelsList)
                                 {
-                                    <li><input type="checkbox" id="Label_@label.Id" /><label for="Label_@label.Id">@label.Text</label></li>
+                                    <li><input type="checkbox" id="Label_@label.Id" label-color="@label.Color" />
+                                    <label for="Label_@label.Id">@label.Text</label></li>
                                 }
                                 <li class="labelAddBtn text-center" data-toggle="modal" data-target=".label-modal">Добавить ярлык <b>+</b></li>
                             </ul>
@@ -67,6 +68,7 @@
         @Html.Partial("~/Views/Shared/_Task.cshtml", task);
     }
 
+    <!-- Модальное окно добавления ярлыка -->
     <div class="modal fade label-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
         <div class="modal-dialog modal-sm" role="document">
             <div class="modal-content labelAddForm">
@@ -79,7 +81,7 @@
                     <div class="form-group">
                         <label class="control-label" for="label-add-color-change">Цвет:</label><br />
                         <div class="btn-group btn-group-xs" data-toggle="buttons" id="label-add-color-change">
-                            <label class="btn btn-default active"><input type="radio" name="options" id="option1" autocomplete="off" checked>белый</label>
+                            <label class="btn btn-primary active"><input type="radio" name="options" id="option1" autocomplete="off" checked>синий</label>
                             <label class="btn btn-danger"><input type="radio" name="options" id="option2" autocomplete="off">красный</label>
                             <label class="btn btn-warning"><input type="radio" name="options" id="option3" autocomplete="off">желтый</label>
                         </div>
@@ -141,6 +143,7 @@
         </div>
     </div>
 
+    <!-- Модальное окно удаления задания -->
     <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" id="delete-confirm">
         <div class="modal-dialog modal-sm" role="document">
             <div class="modal-content">
@@ -159,13 +162,8 @@
             </div>
         </div>
     </div>
-    
-        
-    
+
 
 @section scripts {
-    
-    @Scripts.Render("~/Scripts/dropdowns-enhancement.js",
-                    "~/Scripts/tasks.js")
-
+    @Scripts.Render("~/Scripts/dropdowns-enhancement.js", "~/Scripts/tasks.js")
 }

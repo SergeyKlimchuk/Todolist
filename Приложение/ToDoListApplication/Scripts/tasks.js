@@ -12,8 +12,21 @@ function SetLabelsAddTask() {
         var checkBox = $(LiList[item]).find('input:checkbox')[0];
         var labelText = $(LiList[item]).find('label').text();
 
+        var colorAttr = $(checkBox).attr('label-color');
+        var color;
+        switch (colorAttr) {
+            case 'красный':
+                color = 'danger';
+                break;
+            case 'желтый':
+                color = 'warning';
+                break;
+            default:
+                color = 'primary';
+        }
+
         if (checkBox.checked) {
-            $(LabelsLine).append($("<span class='label-segment pull-right'>" + labelText + "</span>"));
+            $(LabelsLine).append($("<span class='label label-" + color + " pull-right'>" + labelText + "</span>"));
         }
     }
 }
@@ -31,7 +44,7 @@ function SetUsersAddTask() {
         var userName = $(LiList[item]).find('label').text();
         //console.log($(checkBox).checked);
         if (checkBox.checked) {
-            $(UsersLine).append($("<span class='label-segment pull-right'>" + userName + "</span>"));
+            $(UsersLine).append($("<span class='label label-primary pull-right'>" + userName + "</span>"));
         }
     }
 }
@@ -80,14 +93,26 @@ function SetLabelsLineById(id) {
     // Строка с тегами
     var $tagsLine = $($element).find('.task-tags-menu');
     $tagsLine.empty();
-
     for (var item = 0; item < $LiList.length; item++) {
         var $checkBox = $($LiList[item]).find('input:checkbox')[0];
         var $labelText = $($LiList[item]).find('label').text();
         //console.log($checkBox.checked);
 
+        var colorAttr = $($checkBox).attr('label-color');
+        var color;
+        switch (colorAttr) {
+            case 'красный':
+                color = 'danger';
+                break;
+            case 'желтый':
+                color = 'warning';
+                break;
+            default:
+                color = 'primary';
+        }
+
         if ($checkBox.checked) {
-            $($tagsLine).append($("<span class='label-segment pull-right'>" + $labelText + "</span>"));
+            $($tagsLine).append($("<span class='label label-" + color + " pull-right'>" + $labelText + "</span>"));
         }
     }
 
@@ -106,7 +131,7 @@ function SetUsersLineById(id) {
         var $checkBox = $($LiList[item]).find('input')[0];
         var $labelText = $($LiList[item]).find('label').text();
         if ($checkBox.checked) {
-            $($usersLine).append($("<span class='label-segment pull-right'>" + $labelText + "</span>"));
+            $($usersLine).append($("<span class='label label-primary pull-right'>" + $labelText + "</span>"));
         }
     }
 
@@ -394,21 +419,8 @@ function AddNewUserToLists(response) {
 function AddNewLabelToList(response) {
     color = $('#label-add-color-change label.active').text();
     text = $('#label-add-name-change').val();
-    labelId = response;
-
-    resultColor = "";
-    switch (color) {
-        case "красный":
-            resultColor = "#f33"
-            break;
-        case "желтый":
-            resultColor = "#f3f"
-            break;
-        case "белый":
-            resultColor = "#fff"
-            break;
-    }
-
+    labelId = response.Data.Id;
+    labelColor = response.Data.Color;
     var $tasks = $('div.task-box');
     
     for (var i = 0; i < $tasks.length; i++) {
@@ -424,7 +436,8 @@ function AddNewLabelToList(response) {
         
         var $segment = $('<li><input type="checkbox" id="' +
             $id + '" data-target="' +
-            labelId + '" /><label for="' +
+            labelId + '" label-color="' +
+            labelColor + '" /><label for="' +
             $id + '">' + text + '</label></li>');
 
         $segment.insertBefore($lastItem);
@@ -463,13 +476,13 @@ $('#label-add-accept').on('click', function (event) {
         return false;
     }
 
-    var $object = $(event.currentTarget).parents('.labelAddForm');
-    var $LabelsList = $($object).find('#label-add-color-change').first();
-    var $chackedLabel = $($LabelsList).find('input:checked').parent('label');
+    var object = $(event.currentTarget).parents('.labelAddForm');
+    var LabelsList = $(object).find('#label-add-color-change').first();
+    var chackedLabel = $(LabelsList).find('input:checked').parent('label');
     
     // Поиск нужных данных
-    color = $($chackedLabel).text();
-    text = $($object).find('#label-add-name-change').val();
+    color = $(chackedLabel).text();
+    text = $(object).find('#label-add-name-change').val();
     
     $.ajax({
         url: "/Home/AddLabel",
